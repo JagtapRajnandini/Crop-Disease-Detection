@@ -1,0 +1,23 @@
+# Python cache & virtual environments
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+
+# Datasets (Do not push heavy image folders)
+data/
+plant_doc_detection_dataset/
+plant_diseases/
+
+# Model weights & Checkpoints (Heavy binaries)
+*.pt
+*.pth
+runs/
+experiments/
+
+# Generated visual outputs & OS files
+milestone1_verification.jpg
+.DS_Store
+Thumbs.db
