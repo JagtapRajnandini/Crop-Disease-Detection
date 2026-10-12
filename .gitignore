@@ -21,3 +21,8 @@ experiments/
 milestone1_verification.jpg
 .DS_Store
 Thumbs.db
+
+# MLOps & Agent files
+mlruns.db
+mlruns/
+.gemini/
