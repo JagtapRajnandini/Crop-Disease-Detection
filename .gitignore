@@ -30,3 +30,6 @@ mlruns/
 test_model.py
 test_rename_mapping.json
 test_results.csv
+
+agriscan_users.db
+user_scans/
