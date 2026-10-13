@@ -147,8 +147,4 @@ When foliar disease regions are localized, the platform queries an internal agri
 4. **Field Report Export:** One-click generation of timestamped diagnostic summaries (`.txt`) for farm record-keeping.
 
 ---
-
-## 🎓 Academic Attribution
-* **Institution:** MKSSS Cummins College of Engineering for Women, Pune
-* **Department:** Department of Computer Engineering
 * **Dataset Attribution:** Singh, D., et al. *PlantDoc: A Dataset for Visual Plant Disease Detection in the Wild* (CoDS-COMAD 2020).
