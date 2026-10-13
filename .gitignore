@@ -26,3 +26,7 @@ Thumbs.db
 mlruns.db
 mlruns/
 .gemini/
+
+test_model.py
+test_rename_mapping.json
+test_results.csv
