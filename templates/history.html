@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}Farm History & Outbreak Analytics — AgriScan AI{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 14px;">
+    <div>
+        <h2 style="color: var(--primary); font-size: 1.65rem; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 4px;">
+            📊 Farm History & Outbreak Analytics
+        </h2>
+        <p style="color: var(--text-muted); font-size: 0.92rem;">
+            Showing historical field diagnostics for <strong>{{ user.farm_name|default(user.full_name) }}</strong> (Operator: <strong>{{ user.full_name }}</strong>)
+        </p>
+    </div>
+    <a href="{{ url_for('diagnostics') }}" class="btn-nav-primary" style="padding: 10px 20px; font-size: 0.92rem;">
+        🔬 Run New Diagnostic Scan →
+    </a>
+</div>
+
+<!-- ── 3 Summary KPI Cards ─────────────────────────────────────────────────── -->
+<div class="metric-cards-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 28px;">
+    <div class="metric-card">
+        <div class="label">Total Scans Recorded</div>
+        <div class="value">{{ total_scans }}</div>
+    </div>
+    <div class="metric-card">
+        <div class="label">Critical Outbreaks</div>
+        <div class="value" style="color: #9D0208;">{{ critical_count }}</div>
+    </div>
+    <div class="metric-card">
+        <div class="label">Healthy Inspections</div>
+        <div class="value" style="color: #2D6A4F;">{{ healthy_count }}</div>
+    </div>
+</div>
+
+<!-- ── Complete Farm Audit Log Table ──────────────────────────────────────── -->
+<div class="results-card">
+    <h3 style="color: var(--primary); font-size: 1.25rem; font-weight: 800; margin-bottom: 18px;">
+        📋 Complete Farm Audit Log
+    </h3>
+
+    {% if scans and scans|length > 0 %}
+        <div class="data-table-wrapper">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Date & Time</th>
+                        <th>Plot / Bed ID</th>
+                        <th>Crop</th>
+                        <th>Diagnosis</th>
+                        <th>Severity</th>
+                        <th>Certainty</th>
+                        <th>Hotspots</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in scans %}
+                    <tr>
+                        <td style="color: #52796F; font-size: 0.82rem;">{{ s.created_at }}</td>
+                        <td><strong>{{ s.plot_id }}</strong></td>
+                        <td>{{ s.crop_species }}</td>
+                        <td>{{ s.primary_condition }}</td>
+                        <td>
+                            {% if s.severity == 'Critical' %}
+                                <span class="severity-critical" style="padding: 4px 10px; font-size: 0.75rem;">Critical</span>
+                            {% elif s.severity == 'Moderate' %}
+                                <span class="severity-moderate" style="padding: 4px 10px; font-size: 0.75rem;">Moderate</span>
+                            {% else %}
+                                <span class="severity-low" style="padding: 4px 10px; font-size: 0.75rem;">Healthy / Low</span>
+                            {% endif %}
+                        </td>
+                        <td><span class="brand-badge">{{ (s.confidence * 100)|round(1) }}%</span></td>
+                        <td>{{ s.hotspots_count }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div style="padding: 32px; text-align: center; background: #F8FAF8; border-radius: 14px; border: 1px dashed #C8E6C9;">
+            <p style="color: #52796F; font-size: 0.95rem; margin-bottom: 14px;">
+                No field scans recorded yet for this farm account.
+            </p>
+            <a href="{{ url_for('diagnostics') }}" class="btn-hero-primary" style="font-size: 0.92rem; padding: 10px 22px;">
+                🔬 Start Your First Field Scan Now
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}AgriScan AI — Precision Agricultural Intelligence{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+
+<div class="app-wrapper">
+
+    <!-- ── Top Navigation Header ─────────────────────────────────────────────── -->
+    <header class="top-nav">
+        <div style="display: flex; align-items: center; gap: 24px;">
+            <a href="{{ url_for('index') }}" class="brand-title">
+                🌿 AgriScan AI
+                <span class="brand-badge">SaaS Field Core</span>
+            </a>
+            <nav style="display: flex; gap: 14px; align-items: center;">
+                <a href="{{ url_for('index') }}" style="color: var(--primary); text-decoration: none; font-size: 0.88rem; font-weight: 700;">
+                    🏠 Overview
+                </a>
+                <a href="{{ url_for('diagnostics') }}" style="color: var(--primary); text-decoration: none; font-size: 0.88rem; font-weight: 700;">
+                    🔬 Field Diagnostics
+                </a>
+                {% if session.get('user') %}
+                <a href="{{ url_for('farm_history') }}" style="color: var(--primary); text-decoration: none; font-size: 0.88rem; font-weight: 700;">
+                    📊 Farm History
+                </a>
+                {% endif %}
+            </nav>
+        </div>
+
+        <div class="nav-auth-group">
+            {% if session.get('user') %}
+                <div class="user-profile-badge">
+                    <span>👨‍🌾</span>
+                    <span><strong>{{ session['user']['full_name'] }}</strong>{% if session['user']['farm_name'] %} ({{ session['user']['farm_name'] }}){% endif %}</span>
+                </div>
+                <a href="{{ url_for('logout') }}" class="btn-nav-outline">
+                    🚪 Sign Out
+                </a>
+            {% else %}
+                <a href="{{ url_for('login') }}" class="btn-nav-outline">
+                    Sign In
+                </a>
+                <a href="{{ url_for('register') }}" class="btn-nav-primary">
+                    Register
+                </a>
+            {% endif %}
+        </div>
+    </header>
+
+    <!-- ── Flash Notification Banner ─────────────────────────────────────────── -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-container">
+            {% for category, msg in messages %}
+                <div class="flash flash-{{ category }}">{{ msg }}</div>
+            {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- ── Page Content Block ────────────────────────────────────────────────── -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+</div>
+
+{% block scripts %}{% endblock %}
+</body>
+</html>

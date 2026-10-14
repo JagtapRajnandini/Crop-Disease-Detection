@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}AgriScan AI — Precision Agricultural Intelligence{% endblock %}
+
+{% block content %}
+<!-- ── 1. Hero Section ──────────────────────────────────────────────────────── -->
+<div class="hero-container">
+    <div class="hero-pill">⚡ Two-Stage Cascaded Vision · In-The-Wild Field Diagnostics</div>
+    <div class="hero-title">Precision Crop Disease Detection & Field Surveillance Station</div>
+    <div class="hero-subtitle">
+        Eliminate cross-species misdiagnoses with cascaded deep learning. Localize foliar disease hotspots, identify botanical hosts, and generate actionable treatment prescriptions in seconds.
+    </div>
+    <div class="hero-cta-group">
+        <a href="{{ url_for('diagnostics') }}" class="btn-hero-primary">
+            🔬 Launch Field Diagnostics →
+        </a>
+        {% if session.get('user') %}
+            <a href="{{ url_for('farm_history') }}" class="btn-hero-secondary">
+                📊 View Farm Audit History →
+            </a>
+        {% else %}
+            <a href="{{ url_for('register') }}" class="btn-hero-secondary">
+                🌱 Create Farmer Account →
+            </a>
+        {% endif %}
+    </div>
+</div>
+
+<!-- ── 2. Guest / Logged-in Advisory Notice ─────────────────────────────────── -->
+{% if not session.get('user') %}
+    <div style="padding: 14px 20px; background: #E8F5E9; border-radius: 14px; border: 1px solid #C8E6C9; color: #2D6A4F; font-size: 0.92rem; font-weight: 600; margin-bottom: 32px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+        <div>
+            💡 <strong>Guest Mode Active:</strong> You can run live disease scans freely right now. Sign in or register above to unlock your permanent <strong>Farm Audit History</strong> and outbreak tracking.
+        </div>
+        <div>
+            <a href="{{ url_for('login') }}" style="color: #1B4332; text-decoration: underline; font-weight: 700;">Sign in to your farm →</a>
+        </div>
+    </div>
+{% endif %}
+
+<!-- ── 3. Key Performance Metrics Strip ─────────────────────────────────────── -->
+<div class="stats-strip">
+    <div class="stats-card">
+        <div class="stats-number">29</div>
+        <div class="stats-label">Disease Pathologies</div>
+    </div>
+    <div class="stats-card">
+        <div class="stats-number">13</div>
+        <div class="stats-label">Botanical Crops</div>
+    </div>
+    <div class="stats-card">
+        <div class="stats-number">57.5%</div>
+        <div class="stats-label">Detector mAP@0.50</div>
+    </div>
+    <div class="stats-card">
+        <div class="stats-number">&lt; 100ms</div>
+        <div class="stats-label">Inference Latency</div>
+    </div>
+</div>
+
+<!-- ── 4. Architectural Advantages & Core Features ──────────────────────────── -->
+<h2 class="feature-section-title">Engineered for Field-Ready Performance</h2>
+
+<div class="features-grid">
+    <div class="feature-box">
+        <div class="feature-icon-wrapper">🧠</div>
+        <div class="feature-title">Two-Stage Gated Vision</div>
+        <div class="feature-desc">
+            Standard single-stage detectors confuse similar foliage (e.g. Potato vs Tomato). Our ResNet18 backbone validates the plant family before YOLOv8 localizes lesions.
+        </div>
+    </div>
+
+    <div class="feature-box">
+        <div class="feature-icon-wrapper">🛡️</div>
+        <div class="feature-title">Agronomic Advisory Core</div>
+        <div class="feature-desc">
+            Diagnostics without solutions are useless. AgriScan AI maps 18+ disease classes to root causes, moisture triggers, cultural controls, and chemical/organic spray recipes.
+        </div>
+    </div>
+
+    <div class="feature-box">
+        <div class="feature-icon-wrapper">📈</div>
+        <div class="feature-title">Farm Outbreak Tracking</div>
+        <div class="feature-desc">
+            Log scans by greenhouse bed and plot ID. Visualize disease distribution over time and export official timestamped diagnostic summaries for agricultural insurance or agronomists.
+        </div>
+    </div>
+</div>
+{% endblock %}
