@@ -1,12 +1,14 @@
 """
 predict_two_stage.py
 --------------------
-Unified Inference Engine for the True Two-Stage Pipeline.
-Stage 1: ResNet18 predicts the Plant Species.
-Stage 2: YOLOv8 detects diseases, but filters out predictions that do not match the ResNet species.
+Unified Inference Engine for the True Two-Stage Cascaded Pipeline.
+Stage 1: ResNet-18 predicts the botanical plant species.
+Stage 2: YOLOv8 detects localized foliar pathologies and lesions.
 
-If manual_crop is provided (not None and not "Auto-Detect (AI)"), ResNet is bypassed entirely
-and the user-selected crop is used directly — works for all 13 supported species.
+Guarantees 100% species-disease consistency:
+- The predicted host plant and disease condition will NEVER contradict each other.
+- Proper multi-word plant name extraction (e.g. 'bell_pepper' -> 'Bell Pepper').
+- Intelligent cross-species validation between whole-image classification and localized detection.
 """
 
 from pathlib import Path
@@ -25,35 +27,63 @@ YOLO_MODEL_PATH = PROJECT_ROOT / "runs" / "detect" / "experiments" / "yolov8n_pl
 RESNET_MODEL_PATH = PROJECT_ROOT / "runs" / "classify" / "resnet18_species.pth"
 CLASSES_JSON_PATH = PROJECT_ROOT / "runs" / "classify" / "species_classes.json"
 
-# Global models
+# Global models (cached for fast repeated inference)
 _YOLO_MODEL = None
 _RESNET_MODEL = None
 _RESNET_CLASSES = None
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
+KNOWN_SPECIES = [
+    "bell_pepper", "apple", "blueberry", "cherry", "corn", "grape",
+    "peach", "potato", "raspberry", "soyabean", "squash", "strawberry", "tomato"
+]
+
+def extract_plant_from_class(class_name: str) -> str:
+    """
+    Accurately extracts the botanical plant species key from any class name.
+    Correctly handles compound names such as 'bell_pepper' without truncation.
+    """
+    c = class_name.lower().strip()
+    for sp in KNOWN_SPECIES:
+        if c.startswith(sp):
+            return sp
+    return c.split("_")[0]
+
+def format_plant_name(plant_key: str) -> str:
+    """Formats internal plant key (e.g. 'bell_pepper') to display name ('Bell Pepper')."""
+    if not plant_key or plant_key == "Unknown":
+        return "Unknown"
+    return plant_key.replace("_", " ").title()
+
 def get_yolo_model():
     global _YOLO_MODEL
     if _YOLO_MODEL is None:
+        if not YOLO_MODEL_PATH.exists():
+            raise FileNotFoundError(f"YOLO model weights not found at {YOLO_MODEL_PATH}")
         _YOLO_MODEL = YOLO(str(YOLO_MODEL_PATH))
     return _YOLO_MODEL
 
 def get_resnet_model():
     global _RESNET_MODEL, _RESNET_CLASSES
     if _RESNET_MODEL is None:
-        if not RESNET_MODEL_PATH.exists():
+        if not RESNET_MODEL_PATH.exists() or not CLASSES_JSON_PATH.exists():
             return None, None
-            
-        with open(CLASSES_JSON_PATH, "r") as f:
-            _RESNET_CLASSES = json.load(f)
-            
-        _RESNET_MODEL = models.resnet18(weights=None)
-        num_ftrs = _RESNET_MODEL.fc.in_features
-        _RESNET_MODEL.fc = torch.nn.Linear(num_ftrs, len(_RESNET_CLASSES))
-        _RESNET_MODEL.load_state_dict(torch.load(RESNET_MODEL_PATH, map_location=device, weights_only=False))
-        _RESNET_MODEL = _RESNET_MODEL.to(device)
-        _RESNET_MODEL.eval()
-        
+
+        try:
+            with open(CLASSES_JSON_PATH, "r") as f:
+                _RESNET_CLASSES = json.load(f)
+
+            _RESNET_MODEL = models.resnet18(weights=None)
+            num_ftrs = _RESNET_MODEL.fc.in_features
+            _RESNET_MODEL.fc = torch.nn.Linear(num_ftrs, len(_RESNET_CLASSES))
+            _RESNET_MODEL.load_state_dict(torch.load(RESNET_MODEL_PATH, map_location=device, weights_only=False))
+            _RESNET_MODEL = _RESNET_MODEL.to(device)
+            _RESNET_MODEL.eval()
+        except Exception as e:
+            print(f"[Warning] Failed to load ResNet model: {e}")
+            return None, None
+
     return _RESNET_MODEL, _RESNET_CLASSES
 
 def predict_species(img_pil):
@@ -67,30 +97,27 @@ def predict_species(img_pil):
         transforms.ToTensor(),
         transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
     ])
-    
+
     img_tensor = transform(img_pil).unsqueeze(0).to(device)
-    
+
     with torch.no_grad():
         outputs = model(img_tensor)
         probs = torch.nn.functional.softmax(outputs[0], dim=0)
         conf, preds = torch.max(probs, 0)
-        
+
     species_name = classes[preds.item()]
     return species_name, conf.item()
 
 def predict_image(image_input, conf_threshold=0.25, use_two_stage=True, manual_crop=None):
     """
-    Full Two-Stage Inference.
+    Unified Two-Stage Inference Engine.
 
     Parameters
     ----------
     image_input    : PIL.Image, numpy array, or file path
-    conf_threshold : float  — YOLO minimum confidence (0.0–1.0)
-    use_two_stage  : bool   — enable ResNet species filtering
-    manual_crop    : str or None
-        If provided and not "Auto-Detect (AI)", ResNet is bypassed entirely.
-        The value should be a display name like "Potato", "Bell Pepper", etc.
-        It is normalized to snake_case internally (e.g. "Bell Pepper" → "bell_pepper").
+    conf_threshold : float  — YOLO minimum detection confidence (0.0–1.0)
+    use_two_stage  : bool   — enable ResNet species validation
+    manual_crop    : str or None — user manual crop selection override
 
     Returns
     -------
@@ -101,7 +128,7 @@ def predict_image(image_input, conf_threshold=0.25, use_two_stage=True, manual_c
     """
     yolo_model = get_yolo_model()
 
-    # ── Normalise image input ──────────────────────────────────────────────────
+    # ── 1. Normalise image input ───────────────────────────────────────────────
     if isinstance(image_input, Image.Image):
         img_pil = image_input.convert("RGB")
         img_np = np.array(img_pil)
@@ -112,87 +139,125 @@ def predict_image(image_input, conf_threshold=0.25, use_two_stage=True, manual_c
         img_np = image_input
         img_pil = Image.fromarray(img_np)
 
-    # ── Stage 1: Species identification ───────────────────────────────────────
+    # ── 2. Handle manual crop selection ────────────────────────────────────────
     manual_override = False
-    detected_species = "Unknown"
-    species_conf = 0.0
+    target_crop_key = None
 
-    # Check if user manually specified a crop (Universal Crop Dropdown)
-    if manual_crop is not None and manual_crop.strip() not in ("", "Auto-Detect (AI)"):
-        # Convert display name → snake_case to match YOLO class prefix
-        # e.g. "Bell Pepper" → "bell_pepper", "Tomato" → "tomato"
-        detected_species = manual_crop.strip().lower().replace(" ", "_")
-        species_conf = 1.0          # treat as 100% confident — user knows their crop
-        manual_override = True
-    elif use_two_stage and RESNET_MODEL_PATH.exists():
-        detected_species, species_conf = predict_species(img_pil)
+    if manual_crop is not None:
+        crop_clean = manual_crop.strip().lower()
+        if crop_clean not in ("", "none", "auto-detect (ai)", "auto-detect via field vision", "auto-detect"):
+            target_crop_key = crop_clean.replace(" ", "_")
+            manual_override = True
 
-    # ── Stage 2: YOLO disease detection ───────────────────────────────────────
+    # ── 3. Stage 1: Species identification via ResNet ──────────────────────────
+    resnet_species = "Unknown"
+    resnet_conf = 0.0
+
+    if manual_override:
+        resnet_species = target_crop_key
+        resnet_conf = 1.0
+    elif use_two_stage:
+        resnet_species, resnet_conf = predict_species(img_pil)
+
+    # ── 4. Stage 2: YOLO localized disease detection ───────────────────────────
     results = yolo_model.predict(source=img_np, conf=conf_threshold, verbose=False)[0]
-    
-    detections = []
     names = results.names
 
-    # Confidence gate: only filter when we are ≥75% sure of species
-    SPECIES_CONF_GATE = 0.75
-
+    raw_detections = []
     for box in results.boxes:
         cls_id = int(box.cls[0])
-        conf   = float(box.conf[0])
+        conf = float(box.conf[0])
         x1, y1, x2, y2 = map(int, box.xyxy[0])
         class_name = names.get(cls_id, f"Class_{cls_id}")
+        plant_key = extract_plant_from_class(class_name)
 
-        # YOLO label prefix (e.g. "tomato_late_blight" → "tomato")
-        yolo_plant_name = class_name.split("_")[0]
-
-        # ── Filtering logic ────────────────────────────────────────────────────
-        # Filter applies when:
-        #   a) manual_override is True (species_conf == 1.0, always filter), OR
-        #   b) ResNet auto-detected with ≥75% confidence
-        should_filter = (
-            use_two_stage
-            and detected_species != "Unknown"
-            and (manual_override or species_conf >= SPECIES_CONF_GATE)
-        )
-
-        if should_filter and yolo_plant_name.lower() != detected_species.lower():
-            continue  # Cross-species hallucination — discard
-
-        detections.append({
+        raw_detections.append({
             "class": class_name,
-            "plant": yolo_plant_name.capitalize(),
+            "plant": format_plant_name(plant_key),
+            "plant_key": plant_key,
             "confidence": round(conf, 4),
             "box": [x1, y1, x2, y2]
         })
 
-    # ── Draw bounding boxes on filtered detections only ────────────────────────
+    # ── 5. Intelligent Cross-Stage Consistency & Filtering ─────────────────────
+    filtered_detections = []
+
+    if manual_override:
+        # User explicitly stated the crop: only keep detections matching that crop
+        for d in raw_detections:
+            if d["plant_key"] == target_crop_key:
+                filtered_detections.append(d)
+        dominant_plant_key = target_crop_key
+        dominant_plant_name = format_plant_name(target_crop_key)
+
+    elif raw_detections:
+        # Auto-detect mode with detections:
+        # Determine the dominant plant family supported by YOLO detections
+        plant_votes = {}
+        for d in raw_detections:
+            pk = d["plant_key"]
+            plant_votes[pk] = plant_votes.get(pk, 0.0) + d["confidence"]
+
+        # If ResNet has high confidence (>= 0.80) and matches a YOLO detection family, bolster it
+        if use_two_stage and resnet_species in plant_votes and resnet_conf >= 0.80:
+            plant_votes[resnet_species] += (resnet_conf * 1.5)
+
+        dominant_plant_key = max(plant_votes, key=plant_votes.get)
+        dominant_plant_name = format_plant_name(dominant_plant_key)
+
+        # Keep all detections consistent with the verified dominant plant
+        for d in raw_detections:
+            if d["plant_key"] == dominant_plant_key:
+                filtered_detections.append(d)
+
+    else:
+        # No detections (healthy foliage)
+        if use_two_stage and resnet_species != "Unknown":
+            dominant_plant_key = resnet_species
+            dominant_plant_name = format_plant_name(resnet_species)
+        else:
+            dominant_plant_key = "Unknown"
+            dominant_plant_name = "Unknown"
+
+    # ── 6. Draw Bounding Boxes on Verified Detections ──────────────────────────
     annotated_rgb = img_np.copy()
-    for d in detections:
+    for d in filtered_detections:
         x1, y1, x2, y2 = d["box"]
         label = f"{d['class']} {d['confidence']:.2f}"
         cv2.rectangle(annotated_rgb, (x1, y1), (x2, y2), (255, 0, 0), 2)
         cv2.putText(annotated_rgb, label, (x1, max(y1 - 10, 0)),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
 
-    # ── Assemble primary result summary ───────────────────────────────────────
-    if detections:
-        top_detection   = max(detections, key=lambda d: d["confidence"])
-        primary_plant   = detected_species.replace("_", " ").title() if (use_two_stage or manual_override) else top_detection["plant"]
+    # ── 7. Primary Condition & Result Assembly (Guaranteed Consistency) ───────
+    if filtered_detections:
+        top_detection = max(filtered_detections, key=lambda d: d["confidence"])
+        # Primary plant is GUARANTEED to match the detected disease family
+        primary_plant = dominant_plant_name
         primary_condition = top_detection["class"]
-        top_conf        = top_detection["confidence"]
+        top_conf = top_detection["confidence"]
     else:
-        primary_plant     = detected_species.replace("_", " ").title() if (use_two_stage or manual_override) else "Unknown"
+        primary_plant = dominant_plant_name
         primary_condition = "Healthy / No visible disease pattern detected"
-        top_conf          = 0.0
+        top_conf = 0.0
+
+    # Clean detections dictionary (exclude internal helper keys)
+    final_detections = []
+    for d in filtered_detections:
+        final_detections.append({
+            "class": d["class"],
+            "plant": d["plant"],
+            "confidence": d["confidence"],
+            "box": d["box"]
+        })
 
     return {
-        "primary_plant":         primary_plant,
-        "species_confidence":    species_conf,
-        "primary_condition":     primary_condition,
-        "highest_confidence":    top_conf,
-        "total_regions_detected": len(detections),
-        "detections":            detections,
-        "annotated_image":       annotated_rgb,
-        "used_two_stage":        use_two_stage and detected_species != "Unknown",
-        "manual_override":       manual_override,
+        "primary_plant":          primary_plant,
+        "species_confidence":     resnet_conf if not manual_override else 1.0,
+        "primary_condition":      primary_condition,
+        "highest_confidence":     top_conf,
+        "total_regions_detected": len(final_detections),
+        "detections":             final_detections,
+        "annotated_image":        annotated_rgb,
+        "used_two_stage":         use_two_stage,
+        "manual_override":        manual_override,
     }
