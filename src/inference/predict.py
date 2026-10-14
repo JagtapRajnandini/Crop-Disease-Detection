@@ -63,8 +63,18 @@ def predict_image(image_input, conf_threshold=0.25):
 
         class_name = names.get(cls_id, f"Class_{cls_id}")
         
-        # Extract plant name from class_name (e.g. 'tomato_early_blight_leaf' -> 'Tomato')
-        plant_name = class_name.split("_")[0].capitalize()
+        # Accurately extract botanical plant name (handling multi-word plants like bell_pepper)
+        KNOWN_SPECIES = [
+            "bell_pepper", "apple", "blueberry", "cherry", "corn", "grape",
+            "peach", "potato", "raspberry", "soyabean", "squash", "strawberry", "tomato"
+        ]
+        c_lower = class_name.lower().strip()
+        matched_sp = c_lower.split("_")[0]
+        for sp in KNOWN_SPECIES:
+            if c_lower.startswith(sp):
+                matched_sp = sp
+                break
+        plant_name = matched_sp.replace("_", " ").title()
 
         detections.append({
             "class": class_name,
