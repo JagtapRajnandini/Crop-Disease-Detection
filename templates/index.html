@@ -5,10 +5,10 @@
 {% block content %}
 <!-- ── 1. Hero Section ──────────────────────────────────────────────────────── -->
 <div class="hero-container">
-    <div class="hero-pill">⚡ Two-Stage Cascaded Vision · In-The-Wild Field Diagnostics</div>
+    <div class="hero-pill">⚡ Two-Stage Cascaded Vision · Precision Foliar Diagnostics</div>
     <div class="hero-title">Precision Crop Disease Detection & Field Surveillance Station</div>
     <div class="hero-subtitle">
-        Eliminate cross-species misdiagnoses with cascaded deep learning. Localize foliar disease hotspots, identify botanical hosts, and generate actionable treatment prescriptions in seconds.
+        Eliminate cross-species misdiagnoses with cascaded deep learning. Accurately diagnose foliar crop pathologies, identify botanical hosts, and generate actionable agronomic treatment prescriptions in seconds.
     </div>
     <div class="hero-cta-group">
         <a href="{{ url_for('diagnostics') }}" class="btn-hero-primary">
@@ -41,12 +41,12 @@
 <!-- ── 3. Key Performance Metrics Strip ─────────────────────────────────────── -->
 <div class="stats-strip">
     <div class="stats-card">
-        <div class="stats-number">29</div>
-        <div class="stats-label">Disease Pathologies</div>
+        <div class="stats-number">38</div>
+        <div class="stats-label">Pathology & Foliar Classes</div>
     </div>
     <div class="stats-card">
-        <div class="stats-number">13</div>
-        <div class="stats-label">Botanical Crops</div>
+        <div class="stats-number">14</div>
+        <div class="stats-label">Botanical Crop Species</div>
     </div>
 </div>
 
@@ -55,24 +55,44 @@
 
 <div class="features-grid">
     <div class="feature-box">
-        <div class="feature-icon-wrapper">🧠</div>
-        <div class="feature-title">Two-Stage Gated Vision</div>
+        <div class="feature-header">
+            <div class="feature-icon-wrapper">🧠</div>
+            <div class="feature-title">Hybrid AI Diagnostic Architecture</div>
+        </div>
         <div class="feature-desc">
-            Standard single-stage detectors confuse similar foliage (e.g. Potato vs Tomato). Our ResNet18 backbone validates the plant family before YOLOv8 localizes lesions.
+            Standard single models confuse similar foliage and subtle fungal spots. AgriScan AI cascades a Deep PyTorch ResNet-50 feature extractor with a Support Vector Machine (SVM) classifier across 38 foliar health and pathology categories (distinguishing healthy canopies from active infections).
         </div>
     </div>
 
     <div class="feature-box">
-        <div class="feature-icon-wrapper">🛡️</div>
-        <div class="feature-title">Agronomic Advisory Core</div>
+        <div class="feature-header">
+            <div class="feature-icon-wrapper">🛡️</div>
+            <div class="feature-title">Agronomic Advisory Core</div>
+        </div>
         <div class="feature-desc">
-            Diagnostics without solutions are useless. AgriScan AI maps 18+ disease classes to root causes, moisture triggers, cultural controls, and chemical/organic spray recipes.
+            Diagnostics without solutions are useless. AgriScan AI maps 38 foliar crop conditions to root causes, moisture triggers, cultural controls, and chemical/organic spray recipes.
+            <div style="margin-top: 14px; padding-top: 12px; border-top: 1px dashed #D8EAD9; font-size: 0.82rem; color: #1B4332;">
+                <strong style="display: block; margin-bottom: 6px;">📚 Official Agronomic Sources:</strong>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    <a href="https://icar.org.in" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: #E8F5E9; border: 1px solid #A7D7B5; border-radius: 8px; color: #1B4332; font-weight: 700; text-decoration: none; font-size: 0.78rem;" title="Indian Council of Agricultural Research Packages of Practice">
+                        🌾 ICAR Guidelines ↗
+                    </a>
+                    <a href="https://ppqs.gov.in/divisions/central-insecticide-board-registration-committee" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: #E8F5E9; border: 1px solid #A7D7B5; border-radius: 8px; color: #1B4332; font-weight: 700; text-decoration: none; font-size: 0.78rem;" title="Central Insecticides Board & Registration Committee Formulations (Directorate of Plant Protection, Quarantine & Storage)">
+                        🧪 CIBRC Formulations ↗
+                    </a>
+                    <a href="https://www.fao.org/pest-and-pesticide-management" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; background: #E8F5E9; border: 1px solid #A7D7B5; border-radius: 8px; color: #1B4332; font-weight: 700; text-decoration: none; font-size: 0.78rem;" title="FAO Integrated Pest Management Standards">
+                        🌐 FAO IPM Standards ↗
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="feature-box">
-        <div class="feature-icon-wrapper">📈</div>
-        <div class="feature-title">Farm Outbreak Tracking</div>
+        <div class="feature-header">
+            <div class="feature-icon-wrapper">📈</div>
+            <div class="feature-title">Farm Outbreak Tracking</div>
+        </div>
         <div class="feature-desc">
             Log scans by greenhouse bed and plot ID. Visualize disease distribution over time and export official timestamped diagnostic summaries for agricultural insurance or agronomists.
         </div>
