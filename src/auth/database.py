@@ -10,6 +10,10 @@ import sqlite3
 import hashlib
 from pathlib import Path
 from datetime import datetime
+try:
+    import numpy as np
+except ImportError:
+    np = None
 
 # Database file location
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
@@ -119,22 +123,33 @@ def login_user(username, password):
 
 # ── Scan History Functions ─────────────────────────────────────────────────────
 
-def save_scan(user_id, plot_id, crop_species, condition, confidence, severity, hotspots, image_np=None):
+def save_scan(user_id, plot_id, crop_species, condition, confidence, severity, hotspots, image_input=None, image_np=None):
     """
-    Saves a diagnostic scan record and optional annotated image.
+    Saves a diagnostic scan record and the crop image.
+    Supports PIL Image or numpy array (RGB).
     Returns scan_id
     """
     saved_img_rel_path = None
+    target_img = image_input if image_input is not None else image_np
 
-    if image_np is not None:
-        import cv2
-        timestamp_str = datetime.now().strftime("%Y%m%d_%H%M%S")
-        img_filename = f"scan_u{user_id}_{timestamp_str}.jpg"
-        abs_img_path = SCANS_DIR / img_filename
-        # Save as RGB -> BGR for OpenCV
-        bgr = cv2.cvtColor(image_np, cv2.COLOR_RGB2BGR)
-        cv2.imwrite(str(abs_img_path), bgr)
-        saved_img_rel_path = str(Path("user_scans") / img_filename)
+    if target_img is not None:
+        try:
+            timestamp_str = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+            img_filename = f"scan_u{user_id}_{timestamp_str}.jpg"
+            abs_img_path = SCANS_DIR / img_filename
+
+            # If PIL Image
+            if hasattr(target_img, "save"):
+                target_img.save(str(abs_img_path), format="JPEG", quality=90)
+                saved_img_rel_path = f"user_scans/{img_filename}"
+            # If numpy array
+            elif np is not None and isinstance(target_img, np.ndarray):
+                import cv2
+                bgr = cv2.cvtColor(target_img, cv2.COLOR_RGB2BGR)
+                cv2.imwrite(str(abs_img_path), bgr)
+                saved_img_rel_path = f"user_scans/{img_filename}"
+        except Exception as e:
+            print(f"[Warning] Failed to save crop specimen image to disk: {e}")
 
     with get_connection() as conn:
         cursor = conn.cursor()
@@ -172,7 +187,18 @@ def get_user_scans(user_id):
             ORDER BY created_at DESC
         """, (user_id,))
         rows = cursor.fetchall()
-        return [dict(r) for r in rows]
+        scans = []
+        for r in rows:
+            d = dict(r)
+            if d.get("image_path"):
+                clean_path = str(d["image_path"]).replace("\\", "/")
+                # Ensure the file actually exists on disk before serving
+                if (PROJECT_ROOT / clean_path).exists():
+                    d["image_path"] = clean_path
+                else:
+                    d["image_path"] = None
+            scans.append(d)
+        return scans
 
 # Automatically initialize tables when imported
 init_db()
