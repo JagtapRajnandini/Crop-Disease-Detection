@@ -139,18 +139,101 @@ body {
     border: 1px solid #86EFAC;
 }
 
-/* ── Two-Column Main Layout (Sidebar + Main Panel) ─────────────────────── */
+/* ── Main Diagnostics Layout (Full Width Vertical Flow) ─────────────────── */
 .layout-container {
-    display: grid;
-    grid-template-columns: 320px 1fr;
-    gap: 24px;
-    align-items: start;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
-@media (max-width: 992px) {
-    .layout-container {
-        grid-template-columns: 1fr;
-    }
+/* ── Top Horizontal Session Strip ─────────────────────────────────────── */
+.session-strip {
+    background: #FFFFFF;
+    border: 1px solid var(--border-card);
+    border-radius: 14px;
+    padding: 12px 20px;
+    box-shadow: 0 2px 8px rgba(27, 67, 50, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.session-strip-left {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.session-strip-badge {
+    background: #E8F5E9;
+    color: var(--primary);
+    font-weight: 800;
+    font-size: 0.82rem;
+    padding: 4px 10px;
+    border-radius: 8px;
+    border: 1px solid #A7D7B5;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.session-strip-details {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 0.85rem;
+    color: var(--text-body);
+}
+
+.session-divider {
+    color: #CBD5E1;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.status-pill-success {
+    background: #DCFCE7;
+    color: #166534;
+    font-size: 0.74rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 6px;
+    border: 1px solid #86EFAC;
+    display: inline-flex;
+    align-items: center;
+}
+
+.session-login-link {
+    color: var(--primary);
+    font-weight: 700;
+    text-decoration: underline;
+}
+
+.session-strip-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    color: #52796F;
+    background: #F8FAF8;
+    padding: 5px 12px;
+    border-radius: 8px;
+    border: 1px solid #E8F5E9;
+}
+
+.status-indicator-dot {
+    width: 8px;
+    height: 8px;
+    background: #2D6A4F;
+    border-radius: 50%;
+    display: inline-block;
+    box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.2);
 }
 
 /* ── Settings Sidebar ──────────────────────────────────────────────────── */
@@ -188,33 +271,7 @@ body {
     margin-bottom: 8px;
 }
 
-.slider-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 6px;
-}
 
-.slider-val-badge {
-    background: var(--mint-soft);
-    color: var(--primary-light);
-    font-weight: 800;
-    font-size: 0.82rem;
-    padding: 2px 8px;
-    border-radius: 10px;
-    border: 1px solid var(--mint-border);
-}
-
-input[type="range"] {
-    width: 100%;
-    height: 6px;
-    border-radius: 5px;
-    background: #D8EAD9;
-    outline: none;
-    -webkit-appearance: none;
-    accent-color: var(--primary-light);
-    margin: 8px 0;
-}
 
 .field-hint {
     font-size: 0.74rem;
@@ -746,7 +803,7 @@ input:checked + .slider-switch:before {
     background: #F8FAF8;
 }
 
-/* Tab 2: Agronomic Advisory (3-column cards) */
+/* Tab 2: Agronomic Advisory (Legacy 3-column cards) */
 .advisory-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -757,6 +814,100 @@ input:checked + .slider-switch:before {
     .advisory-grid {
         grid-template-columns: 1fr;
     }
+}
+
+/* Tab 2: Structured Agronomic Advisory Layout */
+.advisory-row-dual {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-bottom: 18px;
+}
+
+@media (max-width: 860px) {
+    .advisory-row-dual {
+        grid-template-columns: 1fr;
+    }
+}
+
+.adv-strip-card {
+    background: #FFFFFF;
+    border-radius: 14px;
+    padding: 22px;
+    border: 1px solid #D8F3DC;
+    box-shadow: 0 4px 12px rgba(27,67,50,0.04);
+    height: auto !important;
+    margin-bottom: 18px;
+}
+
+.adv-strip-card h4 {
+    color: var(--primary);
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid #E8F5E9;
+    padding-bottom: 8px;
+}
+
+.adv-safety-strip {
+    background: #FEF9C3;
+    border: 1.5px solid #FACC15;
+    border-radius: 14px;
+    padding: 18px 22px;
+    box-shadow: 0 4px 12px rgba(133, 77, 14, 0.05);
+}
+
+.adv-safety-header {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #854D0E;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px dashed #EAB308;
+}
+
+.adv-safety-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+@media (max-width: 768px) {
+    .adv-safety-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+}
+
+.adv-safety-col {
+    background: #FFFFFF;
+    border: 1px solid #FDE047;
+    border-radius: 10px;
+    padding: 14px 16px;
+    box-shadow: 0 2px 6px rgba(133, 77, 14, 0.04);
+}
+
+.adv-safety-col .safety-sec-title {
+    font-size: 0.86rem;
+    font-weight: 800;
+    color: #854D0E;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.adv-safety-col p {
+    font-size: 0.84rem;
+    line-height: 1.55;
+    color: #713F12;
+    margin: 0;
 }
 
 .adv-card {
@@ -1033,6 +1184,23 @@ input:checked + .slider-switch:before {
     border-color: #52B788;
     box-shadow: 0 12px 30px rgba(45, 106, 79, 0.12);
     transform: translateY(-4px);
+}
+
+.feature-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.feature-header .feature-icon-wrapper {
+    margin-bottom: 0;
+    flex-shrink: 0;
+}
+
+.feature-header .feature-title {
+    margin-bottom: 0;
+    line-height: 1.35;
 }
 
 .feature-icon-wrapper {
