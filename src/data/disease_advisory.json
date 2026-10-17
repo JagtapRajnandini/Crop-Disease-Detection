@@ -1,0 +1,469 @@
+{
+  "Apple___Apple_scab": {
+    "symptoms": "Caused by a common garden fungus (Venturia inaequalis). Spores survive winter in fallen leaves and spread onto young spring leaves during cool, rainy weather. It creates dark olive-green to black velvety spots that make the leaves brittle and crack.",
+    "chemical": [
+      "Captan 50 WP",
+      "Myclobutanil 10 WP",
+      "Difenoconazole 25 EC"
+    ],
+    "organic": [
+      "Sulfur spray",
+      "Bordeaux mixture",
+      "Neem oil formulation"
+    ],
+    "prevention": "- Rake up and destroy or compost all fallen apple leaves before winter to remove fungal hiding spots.\n- Prune crowded branches each spring to allow plenty of sunlight and breezes to dry the leaves quickly.\n- Water trees at the soil level using drip hoses instead of overhead sprinklers that wet the foliage.",
+    "causes": "Caused by a common garden fungus (Venturia inaequalis). Spores survive winter in fallen leaves and spread onto young spring leaves during cool, rainy weather. It creates dark olive-green to black velvety spots that make the leaves brittle and crack."
+  },
+  "Apple___Black_rot": {
+    "symptoms": "Caused by the fungus Botryosphaeria obtusa. It enters through small insect bites or pruning wounds, especially during warm, humid conditions. It creates circular brown spots on leaves (frog-eye spots) and causes fruit to rot and turn into black shriveled mummies.",
+    "chemical": [
+      "Thiophanate-methyl 70 WP",
+      "Captan 50 WP",
+      "Mancozeb 75 WP"
+    ],
+    "organic": [
+      "Copper fungicide",
+      "Bio-fungicide (Bacillus subtilis)"
+    ],
+    "prevention": "- Prune away all dead, cracked, or infected branches during the winter dormant season.\n- Collect and discard any shriveled, dried mummified apples hanging on the tree or lying on the ground.\n- Keep pruning cuts clean and avoid wounding the bark during harvesting.",
+    "causes": "Caused by the fungus Botryosphaeria obtusa. It enters through small insect bites or pruning wounds, especially during warm, humid conditions. It creates circular brown spots on leaves (frog-eye spots) and causes fruit to rot and turn into black shriveled mummies."
+  },
+  "Apple___Cedar_apple_rust": {
+    "symptoms": "Caused by a fungus (Gymnosporangium juniperi-virginianae) that requires two neighboring plants to survive: apple trees and nearby cedar/juniper shrubs. In spring, spores blow in the wind from cedar galls, causing bright yellow-orange spots on apple leaves.",
+    "chemical": [
+      "Myclobutanil",
+      "Mancozeb 75 WP",
+      "Propiconazole 25 EC"
+    ],
+    "organic": [
+      "Liquid copper spray",
+      "Sulfur dust"
+    ],
+    "prevention": "- Remove wild red cedar and juniper bushes growing within a few hundred feet of the apple orchard.\n- Prune gall swellings from nearby evergreen junipers before they produce orange gelatinous horns in spring.\n- Choose rust-resistant apple varieties (such as Liberty, Freedom, or Enterprise) for new plantings.",
+    "causes": "Caused by a fungus (Gymnosporangium juniperi-virginianae) that requires two neighboring plants to survive: apple trees and nearby cedar/juniper shrubs. In spring, spores blow in the wind from cedar galls, causing bright yellow-orange spots on apple leaves."
+  },
+  "Apple___healthy": {
+    "symptoms": "The foliage is vibrant, green, and vigorously photosynthesizing with no fungal, bacterial, or pest damage.",
+    "chemical": [],
+    "organic": [
+      "Organic compost tea for maintenance"
+    ],
+    "prevention": "- Maintain routine balanced organic fertilization in early spring.\n- Ensure regular drip irrigation during hot dry spells without wetting the canopy.\n- Conduct regular weekly canopy scouting to detect early pest or fungal signs.",
+    "causes": "The foliage is vibrant, green, and vigorously photosynthesizing with no fungal, bacterial, or pest damage."
+  },
+  "Blueberry___healthy": {
+    "symptoms": "The blueberry leaf shows optimal chlorophyll levels, strong cell structure, and no signs of nutrient deficiency or foliar infection.",
+    "chemical": [],
+    "organic": [
+      "Maintain acidic soil pH (4.5 - 5.5) with pine mulch"
+    ],
+    "prevention": "- Maintain naturally acidic soil pH between 4.5 and 5.5 using pine bark or peat moss mulch.\n- Keep root zones consistently moist but well-drained, avoiding waterlogging.\n- Prune older canes every 2 to 3 years to stimulate fresh, productive growth.",
+    "causes": "The blueberry leaf shows optimal chlorophyll levels, strong cell structure, and no signs of nutrient deficiency or foliar infection."
+  },
+  "Cherry_(including_sour)___Powdery_mildew": {
+    "symptoms": "Caused by the Podosphaera clandestina fungus. It thrives in warm, dry weather with high night-time humidity, covering young tender leaves with a white, talcum-powder-like coating that curls and stunts new leaf growth.",
+    "chemical": [
+      "Myclobutanil",
+      "Triflumizole",
+      "Tebuconazole 25.9 EC"
+    ],
+    "organic": [
+      "Potassium bicarbonate",
+      "Horticultural oil",
+      "Neem extract"
+    ],
+    "prevention": "- Prune the tree canopy annually to open up air channels and let direct sunlight penetrate inner branches.\n- Avoid high-nitrogen fertilizers late in the season, which promote overly tender, susceptible shoots.\n- Inspect the underside of young leaves early in the season and prune initial infected branch tips.",
+    "causes": "Caused by the Podosphaera clandestina fungus. It thrives in warm, dry weather with high night-time humidity, covering young tender leaves with a white, talcum-powder-like coating that curls and stunts new leaf growth."
+  },
+  "Cherry_(including_sour)___healthy": {
+    "symptoms": "Leaves are clean, firm, and displaying healthy deep-green coloration with no fungal webbing or spotting.",
+    "chemical": [],
+    "organic": [
+      "Balanced vermicompost"
+    ],
+    "prevention": "- Apply an annual layer of organic mulch around the dripline to conserve moisture and suppress weeds.\n- Irrigate at ground level during fruit development.\n- Scout leaves regularly following spring rains.",
+    "causes": "Leaves are clean, firm, and displaying healthy deep-green coloration with no fungal webbing or spotting."
+  },
+  "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot": {
+    "symptoms": "Caused by the fungus Cercospora zeae-maydis. It survives on old corn stalk residue on the soil surface. During warm, humid, overcast weather, spores splash upward onto lower leaves, forming narrow rectangular grayish-tan lesions that stop the plant from making grain.",
+    "chemical": [
+      "Azoxystrobin 18.2% + Difenoconazole 11.4%",
+      "Pyraclostrobin",
+      "Propiconazole"
+    ],
+    "organic": [
+      "Trichoderma viride foliar spray",
+      "Bio-copper"
+    ],
+    "prevention": "- Rotate corn fields with non-host crops like soybeans, pulses, or vegetables every 1 to 2 years.\n- Deeply plow or chop leftover corn stalks and crop residue after harvest to break down fungal spores.\n- Maintain recommended seed spacing to encourage wind circulation through the lower stalk canopy.",
+    "causes": "Caused by the fungus Cercospora zeae-maydis. It survives on old corn stalk residue on the soil surface. During warm, humid, overcast weather, spores splash upward onto lower leaves, forming narrow rectangular grayish-tan lesions that stop the plant from making grain."
+  },
+  "Corn_(maize)___Common_rust_": {
+    "symptoms": "Caused by the fungus Puccinia sorghi. Rust spores do not survive severe winters locally but are carried hundreds of miles by high-altitude winds from warmer southern regions. Cool temperatures and high humidity cause small, raised, brick-red to brownish pustules on both leaf surfaces.",
+    "chemical": [
+      "Azoxystrobin 23 SC",
+      "Mancozeb 75 WP",
+      "Propiconazole 25 EC"
+    ],
+    "organic": [
+      "Neem seed kernel extract (NSKE 5%)",
+      "Sulfur spray"
+    ],
+    "prevention": "- Plant rust-tolerant or resistant hybrid corn varieties suited for your region.\n- Plant early in the season so crops mature before peak rust spore migration in mid-summer.\n- Maintain balanced soil fertility, avoiding excessive nitrogen that makes leaf tissue overly succulent.",
+    "causes": "Caused by the fungus Puccinia sorghi. Rust spores do not survive severe winters locally but are carried hundreds of miles by high-altitude winds from warmer southern regions. Cool temperatures and high humidity cause small, raised, brick-red to brownish pustules on both leaf surfaces."
+  },
+  "Corn_(maize)___Northern_Leaf_Blight": {
+    "symptoms": "Caused by the fungus Exserohilum turcicum. It overwinters in old corn debris. Extended wet spells with temperatures between 18C and 27C trigger large, cigar-shaped grayish-green to tan lesions that can spread rapidly and dry out entire leaves.",
+    "chemical": [
+      "Mancozeb 75 WP",
+      "Pyraclostrobin + Fluxapyroxad",
+      "Chlorothalonil"
+    ],
+    "organic": [
+      "Bacillus amyloliquefaciens",
+      "Compost extract"
+    ],
+    "prevention": "- Practice at least a 1 to 2-year crop rotation away from corn to starve soil-borne spores.\n- Till or incorporate post-harvest corn stubble into the soil to accelerate decomposition.\n- Select corn hybrids with proven multi-gene resistance to Northern corn leaf blight.",
+    "causes": "Caused by the fungus Exserohilum turcicum. It overwinters in old corn debris. Extended wet spells with temperatures between 18C and 27C trigger large, cigar-shaped grayish-green to tan lesions that can spread rapidly and dry out entire leaves."
+  },
+  "Corn_(maize)___healthy": {
+    "symptoms": "The corn leaf is robust, rich green, and showing clean parallel veins with healthy nutrient uptake and zero lesions.",
+    "chemical": [],
+    "organic": [
+      "Balanced NPK organic fertilization"
+    ],
+    "prevention": "- Provide consistent soil moisture during critical tasseling and silking stages.\n- Scout regularly for stalk borers, armyworms, or early leaf spotting.\n- Maintain balanced nitrogen, phosphorus, and potassium according to routine soil tests.",
+    "causes": "The corn leaf is robust, rich green, and showing clean parallel veins with healthy nutrient uptake and zero lesions."
+  },
+  "Grape___Black_rot": {
+    "symptoms": "Caused by the fungus Guignardia bidwellii. It survives winter in infected canes and dried mummy berries left on the vine or ground. Rain splashes spores onto young spring leaves, creating round reddish-brown spots with tiny black dots, which can rapidly spread to destroy grape clusters.",
+    "chemical": [
+      "Mancozeb 75 WP",
+      "Myclobutanil",
+      "Captan 50 WP"
+    ],
+    "organic": [
+      "Bordeaux mixture 1%",
+      "Copper hydroxide"
+    ],
+    "prevention": "- Prune out and remove all dried, mummified grapes hanging on the trellis or lying on the vineyard floor.\n- Thin dense leaf canopies around the grape clusters to allow morning sun and wind to dry dew quickly.\n- Keep trellis rows weeded and cleared to reduce ground-level humidity.",
+    "causes": "Caused by the fungus Guignardia bidwellii. It survives winter in infected canes and dried mummy berries left on the vine or ground. Rain splashes spores onto young spring leaves, creating round reddish-brown spots with tiny black dots, which can rapidly spread to destroy grape clusters."
+  },
+  "Grape___Esca_(Black_Measles)": {
+    "symptoms": "Caused by a complex of wood-inhabiting fungi that enter older vines through pruning cuts. The fungus attacks the inner wood vascular channels, causing distinct tiger-stripe yellow and brown leaf patterns and dark speckling on grape skins.",
+    "chemical": [
+      "Thiophanate-methyl wound sealant",
+      "Fosetyl-Al"
+    ],
+    "organic": [
+      "Trichoderma atroviride wound protectant",
+      "Bio-inoculants"
+    ],
+    "prevention": "- Delay pruning until late in the dormant season when pruning wounds heal much faster.\n- Protect fresh, large pruning wounds immediately with a wound sealant or pruning paste.\n- Disinfect pruning shears between individual vines using 70% alcohol or a 10% bleach solution.",
+    "causes": "Caused by a complex of wood-inhabiting fungi that enter older vines through pruning cuts. The fungus attacks the inner wood vascular channels, causing distinct tiger-stripe yellow and brown leaf patterns and dark speckling on grape skins."
+  },
+  "Grape___Leaf_blight_(Isariopsis_Leaf_Spot)": {
+    "symptoms": "Caused by the fungus Phaeoisariopsis vitis. It attacks vines during late summer and warm, wet conditions, producing reddish-brown irregular angular spots that cause leaves to yellow and drop prematurely, weakening the vine before winter.",
+    "chemical": [
+      "Carbendazim 50 WP",
+      "Chlorothalonil 75 WP",
+      "Copper Oxychloride 50 WP"
+    ],
+    "organic": [
+      "Neem oil 1%",
+      "Potassium bicarbonate"
+    ],
+    "prevention": "- Ensure adequate shoot thinning to improve cross-ventilation within the fruiting zone.\n- Collect and dispose of fallen diseased leaves in autumn to prevent spore buildup for the next season.\n- Avoid high-pressure overhead irrigation that sprays water onto the grape canopy.",
+    "causes": "Caused by the fungus Phaeoisariopsis vitis. It attacks vines during late summer and warm, wet conditions, producing reddish-brown irregular angular spots that cause leaves to yellow and drop prematurely, weakening the vine before winter."
+  },
+  "Grape___healthy": {
+    "symptoms": "Foliage displays natural palmate shape, bright chlorophyll pigmentation, and crisp healthy leaf edges with zero fungal spots.",
+    "chemical": [],
+    "organic": [
+      "Seaweed bio-stimulant foliar spray"
+    ],
+    "prevention": "- Maintain good vineyard canopy management (shoot positioning, tucking, and selective leaf pulling).\n- Maintain drip irrigation directly in the vine row to avoid foliage wetting.\n- Scout grape clusters and undersides of leaves weekly during flowering and veraison.",
+    "causes": "Foliage displays natural palmate shape, bright chlorophyll pigmentation, and crisp healthy leaf edges with zero fungal spots."
+  },
+  "Orange___Haunglongbing_(Citrus_greening)": {
+    "symptoms": "A serious bacterial infection (Candidatus Liberibacter asiaticus) spread from tree to tree by tiny flying insects called Asian Citrus Psyllids. The bacteria clogs the tree nutrient transport tubes, causing uneven, blotchy yellow mottling on leaves and bitter, lopsided fruit.",
+    "chemical": [
+      "Imidacloprid 17.8 SL (for psyllid vector)",
+      "Thiamethoxam 25 WG"
+    ],
+    "organic": [
+      "Horticultural mineral oils against Asian citrus psyllid"
+    ],
+    "prevention": "- Monitor and control Asian citrus psyllid insects using sticky yellow traps and registered bio-pesticides.\n- Plant only certified disease-free grafted saplings from authorized government nurseries.\n- Immediately remove and destroy heavily infected trees to protect surrounding healthy citrus groves.",
+    "causes": "A serious bacterial infection (Candidatus Liberibacter asiaticus) spread from tree to tree by tiny flying insects called Asian Citrus Psyllids. The bacteria clogs the tree nutrient transport tubes, causing uneven, blotchy yellow mottling on leaves and bitter, lopsided fruit."
+  },
+  "Peach___Bacterial_spot": {
+    "symptoms": "Caused by the bacterium Xanthomonas arboricola pv. pruni. It overwinters in branch cankers and buds. In spring, blowing rain splashes bacteria onto leaves, causing small water-soaked spots that turn purple-brown and fall out, giving leaves a shot-hole appearance.",
+    "chemical": [
+      "Oxytetracycline",
+      "Copper hydroxide 53.8 WG"
+    ],
+    "organic": [
+      "Basic copper sulfate at dormant bud break",
+      "Bio-bactericides"
+    ],
+    "prevention": "- Plant windbreaks (hedges or tree rows) around orchards to reduce wind-blown rain and sand abrasion.\n- Avoid overhead sprinkler irrigation that keeps leaves continuously moist.\n- Prune during dry winter weather to remove diseased twigs and open the tree center for airflow.",
+    "causes": "Caused by the bacterium Xanthomonas arboricola pv. pruni. It overwinters in branch cankers and buds. In spring, blowing rain splashes bacteria onto leaves, causing small water-soaked spots that turn purple-brown and fall out, giving leaves a shot-hole appearance."
+  },
+  "Peach___healthy": {
+    "symptoms": "Leaves are glossy, smooth, lance-shaped, and vigorously supporting tree growth without bacterial pitting or leaf drop.",
+    "chemical": [],
+    "organic": [
+      "Organic micronutrient spray (Zinc + Boron)"
+    ],
+    "prevention": "- Apply balanced organic compost around the drip zone in early spring.\n- Keep tree basins properly mulched to retain even moisture during summer heat.\n- Scout regularly for leaf curl or early spot symptoms after spring rains.",
+    "causes": "Leaves are glossy, smooth, lance-shaped, and vigorously supporting tree growth without bacterial pitting or leaf drop."
+  },
+  "Pepper,_bell___Bacterial_spot": {
+    "symptoms": "Caused by the bacterium Xanthomonas campestris. It spreads rapidly through infected seeds or rain splash during hot, wet weather. It causes small, water-soaked, greasy-looking spots on leaves that turn brown with yellow rings, leading to heavy leaf drop.",
+    "chemical": [
+      "Copper Oxychloride 50 WP + Streptocycline (90:10)",
+      "Kasugamycin 3% SL"
+    ],
+    "organic": [
+      "Copper octanoate",
+      "Bacillus subtilis (Serenade)"
+    ],
+    "prevention": "- Buy and sow only certified disease-free, warm-water treated seeds and healthy transplants.\n- Water with drip tape or soaker hoses at the soil base; never use overhead sprinklers on pepper plants.\n- Do not work in or touch pepper beds when leaves are wet from morning dew or rain.",
+    "causes": "Caused by the bacterium Xanthomonas campestris. It spreads rapidly through infected seeds or rain splash during hot, wet weather. It causes small, water-soaked, greasy-looking spots on leaves that turn brown with yellow rings, leading to heavy leaf drop."
+  },
+  "Pepper,_bell___healthy": {
+    "symptoms": "Pepper foliage is robust, deep emerald green, showing smooth leaf margins and excellent blossom development.",
+    "chemical": [],
+    "organic": [
+      "Vermicompost wash foliar nutrition"
+    ],
+    "prevention": "- Maintain regular drip watering and organic straw mulch around plant bases.\n- Support plants with stakes or cages to keep leaves elevated away from damp garden soil.\n- Practice annual crop rotation away from other nightshades like tomatoes and eggplants.",
+    "causes": "Pepper foliage is robust, deep emerald green, showing smooth leaf margins and excellent blossom development."
+  },
+  "Potato___Early_blight": {
+    "symptoms": "Caused by the soil-dwelling fungus Alternaria solani. It attacks older leaves first, especially when plants are stressed by heavy tuber growth, poor nutrition, or alternating wet and dry weather. It creates distinctive brown spots with target-board concentric rings.",
+    "chemical": [
+      "Chlorothalonil 75 WP",
+      "Mancozeb 75 WP",
+      "Difenoconazole 25 EC"
+    ],
+    "organic": [
+      "Copper hydroxide",
+      "Trichoderma harzianum foliar application"
+    ],
+    "prevention": "- Maintain steady, balanced plant nutrition with adequate potassium and nitrogen to keep plants vigorous.\n- Use thick straw mulch around potato hills to prevent soil fungi from splashing onto lower leaves.\n- Rotate potato plots on a 3-year cycle with non-solanaceous crops (like beans, corn, or brassicas).",
+    "causes": "Caused by the soil-dwelling fungus Alternaria solani. It attacks older leaves first, especially when plants are stressed by heavy tuber growth, poor nutrition, or alternating wet and dry weather. It creates distinctive brown spots with target-board concentric rings."
+  },
+  "Potato___Late_blight": {
+    "symptoms": "A very aggressive disease caused by Phytophthora infestans (the pathogen of the historical Irish Potato Famine). It flourishes during cool, persistently wet or foggy weather (15C - 20C). It causes large, dark, greasy water-soaked leaf blotches that rot rapidly.",
+    "chemical": [
+      "Metalaxyl 8% + Mancozeb 64% WP",
+      "Cymoxanil + Mancozeb",
+      "Dimethomorph 50 WP"
+    ],
+    "organic": [
+      "Copper oxychloride 50 WP",
+      "Bio-agent Pseudomonas fluorescens"
+    ],
+    "prevention": "- Plant only certified disease-free seed tubers from trusted agricultural suppliers.\n- Hill soil deeply over growing tubers to create a protective barrier against spores washing down from leaves.\n- Destroy and bury any volunteer potato plants or cull piles near the field before the season starts.",
+    "causes": "A very aggressive disease caused by Phytophthora infestans (the pathogen of the historical Irish Potato Famine). It flourishes during cool, persistently wet or foggy weather (15C - 20C). It causes large, dark, greasy water-soaked leaf blotches that rot rapidly."
+  },
+  "Potato___healthy": {
+    "symptoms": "Leaves are broad, healthy green, and displaying crisp leaflet margins with active tuber development below ground.",
+    "chemical": [],
+    "organic": [
+      "Bio-NPK microbial consortium"
+    ],
+    "prevention": "- Ensure consistent moisture via drip irrigation; avoid letting soil dry completely between waterings.\n- Hill up soil properly around the base of vines as they grow.\n- Inspect the underside of leaves for pests like potato beetles or aphids every week.",
+    "causes": "Leaves are broad, healthy green, and displaying crisp leaflet margins with active tuber development below ground."
+  },
+  "Raspberry___healthy": {
+    "symptoms": "Foliage is clear, compound, rich green, and showing strong cane vigor with zero fungal rust or spotting.",
+    "chemical": [],
+    "organic": [
+      "Leaf mould compost mulch"
+    ],
+    "prevention": "- Prune out spent floricanes (two-year-old fruiting canes) immediately after summer harvest.\n- Keep cane rows thinned to allow sunlight and airflow through the center of the hedge.\n- Water at the root zone with drip irrigation to keep developing berries and leaves dry.",
+    "causes": "Foliage is clear, compound, rich green, and showing strong cane vigor with zero fungal rust or spotting."
+  },
+  "Soybean___healthy": {
+    "symptoms": "Leaves are trifoliate, deep green, and actively fixing nitrogen through root nodules with zero foliar lesions or rust.",
+    "chemical": [],
+    "organic": [
+      "Rhizobium seed inoculation"
+    ],
+    "prevention": "- Practice 2 to 3-year crop rotation with corn, sorghum, or small grains.\n- Plant at recommended row spacing to ensure good ground cover while allowing air movement.\n- Inspect field weekly for leaf beetles, pod borers, or early leaf spot symptoms.",
+    "causes": "Leaves are trifoliate, deep green, and actively fixing nitrogen through root nodules with zero foliar lesions or rust."
+  },
+  "Squash___Powdery_mildew": {
+    "symptoms": "Caused by the fungus Podosphaera xanthii. It thrives in warm, humid weather and dense, crowded gardens. It spreads airborne spores that cover large squash leaves in a white powdery dust, causing leaves to yellow, wither, and expose developing squash to sunburn.",
+    "chemical": [
+      "Myclobutanil 10 WP",
+      "Hexaconazole 5 EC",
+      "Azoxystrobin 23 SC"
+    ],
+    "organic": [
+      "Potassium bicarbonate 0.5%",
+      "Neem oil 1%",
+      "Dilute milk spray (1:9)"
+    ],
+    "prevention": "- Plant squash varieties bred with natural powdery mildew resistance.\n- Space hills at least 4 to 6 feet apart to give large runner leaves room for wind circulation.\n- Water strictly in the morning at the soil base so leaves stay dry throughout the afternoon and evening.",
+    "causes": "Caused by the fungus Podosphaera xanthii. It thrives in warm, humid weather and dense, crowded gardens. It spreads airborne spores that cover large squash leaves in a white powdery dust, causing leaves to yellow, wither, and expose developing squash to sunburn."
+  },
+  "Strawberry___Leaf_scorch": {
+    "symptoms": "Caused by the fungus Diplocarpon earlianum. Spores splash from infected older leaves onto new growth during extended rain or frequent overhead sprinkling, creating small purplish spots that enlarge and make leaf edges look scorched, dry, and burned.",
+    "chemical": [
+      "Captan 50 WP",
+      "Thiophanate-methyl",
+      "Chlorothalonil"
+    ],
+    "organic": [
+      "Copper soap fungicide",
+      "Bio-fungicide Trichoderma"
+    ],
+    "prevention": "- Grow strawberries on raised beds lined with clean straw or plastic mulch to keep leaves off wet soil.\n- Renovate and thin strawberry beds after harvest, mowing down and discarding old infected foliage.\n- Replace strawberry runner beds every 3 to 4 years to prevent fungal spore buildup in the root zone.",
+    "causes": "Caused by the fungus Diplocarpon earlianum. Spores splash from infected older leaves onto new growth during extended rain or frequent overhead sprinkling, creating small purplish spots that enlarge and make leaf edges look scorched, dry, and burned."
+  },
+  "Strawberry___healthy": {
+    "symptoms": "Leaves show vibrant trifoliate green leaflets, firm petioles, and healthy flowering runners with no leaf spot or scorch.",
+    "chemical": [],
+    "organic": [
+      "Straw mulch under leaves to prevent soil splash"
+    ],
+    "prevention": "- Ensure adequate bed spacing and clean straw mulching around the berry crowns.\n- Water early in the morning using drip lines so foliage dries before midday.\n- Remove yellowing or dying lower leaves periodically to maintain tidy, aerated beds.",
+    "causes": "Leaves show vibrant trifoliate green leaflets, firm petioles, and healthy flowering runners with no leaf spot or scorch."
+  },
+  "Tomato___Bacterial_spot": {
+    "symptoms": "Caused by Xanthomonas bacteria. It spreads through infected seed or splashing rain during hot, humid weather (24C - 30C). It produces tiny, water-soaked dark brown spots that often have a distinct yellow halo, causing severe leaf drop and exposing fruit to sunscald.",
+    "chemical": [
+      "Copper Oxychloride 50 WP + Streptocycline (100 ppm)",
+      "Kasugamycin"
+    ],
+    "organic": [
+      "Bacillus subtilis bio-fungicide",
+      "Neem cake extract"
+    ],
+    "prevention": "- Never use overhead sprinkler irrigation; water tomato roots gently with drip hoses or soaker tape.\n- Stake and trellis tomato vines off the ground and prune lower suckers to keep leaves well-ventilated.\n- Sanitize stakes, cages, and pruning tools before each season with a 10% bleach solution.",
+    "causes": "Caused by Xanthomonas bacteria. It spreads through infected seed or splashing rain during hot, humid weather (24C - 30C). It produces tiny, water-soaked dark brown spots that often have a distinct yellow halo, causing severe leaf drop and exposing fruit to sunscald."
+  },
+  "Tomato___Early_blight": {
+    "symptoms": "Caused by the fungus Alternaria linariae. It lives in soil and plant residue, splashing onto lower leaves when rain hits bare ground. It forms brown circular spots with distinctive bullseye concentric rings, causing lower leaves to turn yellow and die from the ground up.",
+    "chemical": [
+      "Mancozeb 75 WP",
+      "Chlorothalonil 75 WP",
+      "Azoxystrobin + Difenoconazole"
+    ],
+    "organic": [
+      "Copper hydroxide",
+      "Trichoderma viride foliar treatment"
+    ],
+    "prevention": "- Prune off the bottom 12 to 18 inches of foliage once tomato vines grow tall to remove leaves near the soil.\n- Spread a 2 to 3-inch layer of straw or wood chip mulch around tomato bases to stop soil spores splashing.\n- Rotate tomato beds each season; avoid planting where tomatoes, potatoes, or eggplants grew recently.",
+    "causes": "Caused by the fungus Alternaria linariae. It lives in soil and plant residue, splashing onto lower leaves when rain hits bare ground. It forms brown circular spots with distinctive bullseye concentric rings, causing lower leaves to turn yellow and die from the ground up."
+  },
+  "Tomato___Late_blight": {
+    "symptoms": "Caused by the aggressive water-mold Phytophthora infestans. It spreads rapidly through the air during cool, wet, cloudy periods. It produces large, dark, greasy-looking water-soaked lesions that rot stems, leaves, and green tomatoes within days.",
+    "chemical": [
+      "Metalaxyl 8% + Mancozeb 64% WP",
+      "Cymoxanil 8% + Mancozeb 64% WP",
+      "Dimethomorph"
+    ],
+    "organic": [
+      "Copper sulphate + Lime (Bordeaux mixture 1%)",
+      "Pseudomonas fluorescens"
+    ],
+    "prevention": "- Choose late blight-resistant tomato varieties (such as Mountain Magic, Defiant, or Plum Regal).\n- Immediately pull up and bag heavily infected vines-do not leave them in compost piles.\n- Keep plants under cover (high tunnels or polyhouses) or ensure wide spacing to minimize leaf wetness duration.",
+    "causes": "Caused by the aggressive water-mold Phytophthora infestans. It spreads rapidly through the air during cool, wet, cloudy periods. It produces large, dark, greasy-looking water-soaked lesions that rot stems, leaves, and green tomatoes within days."
+  },
+  "Tomato___Leaf_Mold": {
+    "symptoms": "Caused by the fungus Passalora fulva. It is common in greenhouses, polyhouses, or humid gardens with poor air movement. It creates pale green or yellow patches on the upper leaf surface and velvety olive-brown fungal growth on the underside.",
+    "chemical": [
+      "Chlorothalonil",
+      "Difenoconazole 25 EC",
+      "Thiophanate-methyl"
+    ],
+    "organic": [
+      "Copper octanoate",
+      "Sulfur dust"
+    ],
+    "prevention": "- Open greenhouse roll-up sides and use circulation fans to keep relative humidity below 85%.\n- Prune crowded inner leaves and suckers to allow light and fresh air into the center of each vine.\n- Space plants generously in protected polyhouses to prevent overlapping foliage.",
+    "causes": "Caused by the fungus Passalora fulva. It is common in greenhouses, polyhouses, or humid gardens with poor air movement. It creates pale green or yellow patches on the upper leaf surface and velvety olive-brown fungal growth on the underside."
+  },
+  "Tomato___Septoria_leaf_spot": {
+    "symptoms": "Caused by the fungus Septoria lycopersici. Spores survive in weed nightshades and crop debris, splashing onto lower leaves during wet periods. It causes dozens of tiny circular spots with dark brown borders and light gray centers, progressing rapidly up the plant.",
+    "chemical": [
+      "Chlorothalonil 75 WP",
+      "Mancozeb 75 WP",
+      "Copper Oxychloride 50 WP"
+    ],
+    "organic": [
+      "Copper fungicide",
+      "Bio-agent Bacillus amyloliquefaciens"
+    ],
+    "prevention": "- Strip off and discard lower infected leaves as soon as the first few spots appear in early summer.\n- Mulch the ground beneath plants immediately after transplanting to block soil splash.\n- Control weeds in and around tomato plots, especially wild nightshades and horsenettle.",
+    "causes": "Caused by the fungus Septoria lycopersici. Spores survive in weed nightshades and crop debris, splashing onto lower leaves during wet periods. It causes dozens of tiny circular spots with dark brown borders and light gray centers, progressing rapidly up the plant."
+  },
+  "Tomato___Spider_mites Two-spotted_spider_mite": {
+    "symptoms": "Caused by microscopic two-spotted spider mites (Tetranychus urticae). They multiply rapidly in hot, dry, dusty weather, living under leaves and sucking out plant sap. This leaves tiny yellow or white speckles (stippling) and fine silken webbing across stems.",
+    "chemical": [
+      "Spiromesifen 22.9 SC",
+      "Abamectin 1.9 EC",
+      "Diafenthiuron 50 WP"
+    ],
+    "organic": [
+      "Neem oil 2%",
+      "Insecticidal potassium soap",
+      "Predatory mites (Phytoseiulus persimilis)"
+    ],
+    "prevention": "- Spray undersides of leaves with a forceful jet of water to dislodge mites and wash away fine webbing.\n- Keep garden pathways and soil moist to reduce hot, dry, dusty conditions that mites love.\n- Encourage natural predators like ladybugs, lacewings, and predatory mites by avoiding broad synthetic sprays.",
+    "causes": "Caused by microscopic two-spotted spider mites (Tetranychus urticae). They multiply rapidly in hot, dry, dusty weather, living under leaves and sucking out plant sap. This leaves tiny yellow or white speckles (stippling) and fine silken webbing across stems."
+  },
+  "Tomato___Target_Spot": {
+    "symptoms": "Caused by the fungus Corynespora cassiicola. It thrives in warm, humid tropical and subtropical weather. It forms small brown pinpoint spots that enlarge into round lesions with light brown centers and dark concentric rings resembling targets, causing leaf drop.",
+    "chemical": [
+      "Azoxystrobin",
+      "Chlorothalonil 75 WP",
+      "Pyraclostrobin"
+    ],
+    "organic": [
+      "Copper hydroxide",
+      "Trichoderma harzianum"
+    ],
+    "prevention": "- Ensure wide plant spacing (at least 2.5 to 3 feet between plants) to maximize air movement.\n- Train plants on sturdy trellises and prune suckers to keep the canopy open and dry.\n- Collect and destroy all crop residues immediately after the final tomato harvest.",
+    "causes": "Caused by the fungus Corynespora cassiicola. It thrives in warm, humid tropical and subtropical weather. It forms small brown pinpoint spots that enlarge into round lesions with light brown centers and dark concentric rings resembling targets, causing leaf drop."
+  },
+  "Tomato___Tomato_Yellow_Leaf_Curl_Virus": {
+    "symptoms": "A destructive plant virus transmitted from plant to plant by tiny silverleaf whitefly insects. The virus causes leaves to curl upwards like cups, turn pale yellow along the margins, and become small, leathery, and stunted, preventing fruit from setting.",
+    "chemical": [
+      "Diafenthiuron 50 WP (whitefly control)",
+      "Thiamethoxam 25 WG",
+      "Acetamiprid 20 SP"
+    ],
+    "organic": [
+      "Yellow sticky insect traps (30/acre)",
+      "Neem oil 3% against vector whiteflies"
+    ],
+    "prevention": "- Protect young tomato seedlings with fine insect netting (50-mesh) to prevent whiteflies from landing.\n- Hang yellow sticky traps throughout the garden to detect and capture whitefly populations early.\n- Remove and bag infected plants immediately to prevent whiteflies from transferring the virus to neighbors.",
+    "causes": "A destructive plant virus transmitted from plant to plant by tiny silverleaf whitefly insects. The virus causes leaves to curl upwards like cups, turn pale yellow along the margins, and become small, leathery, and stunted, preventing fruit from setting."
+  },
+  "Tomato___Tomato_mosaic_virus": {
+    "symptoms": "A very hardy virus spread easily by touch, contaminated hands, pruning tools, or infected seeds. It creates a mottled light-and-dark green mosaic pattern on leaves, often making leaves narrow and distorted like fern fronds (shoestring symptom).",
+    "chemical": [
+      "No direct viricide exists; control sap-feeding vectors with Imidacloprid."
+    ],
+    "organic": [
+      "Foliar spray of skim milk (10% solution) to neutralize virus on hands and tools."
+    ],
+    "prevention": "- Wash hands with soap and water before handling tomato plants, especially after using tobacco products.\n- Disinfect pruning shears in a 20% nonfat dry milk solution or 10% bleach between plants.\n- Purchase certified virus-free seeds and choose mosaic-resistant tomato cultivars (labeled TMV or ToMV).",
+    "causes": "A very hardy virus spread easily by touch, contaminated hands, pruning tools, or infected seeds. It creates a mottled light-and-dark green mosaic pattern on leaves, often making leaves narrow and distorted like fern fronds (shoestring symptom)."
+  },
+  "Tomato___healthy": {
+    "symptoms": "The tomato plant shows vigorous vegetative growth, rich green compound leaves, strong branching, and healthy blossom clusters with zero foliar spotting.",
+    "chemical": [],
+    "organic": [
+      "Foliar spray of balanced seaweed extract + Humic acid"
+    ],
+    "prevention": "- Stake, prune, and trellis plants to keep foliage off damp garden soil.\n- Maintain deep, consistent drip watering to prevent blossom end rot and keep leaves dry.\n- Apply 2 to 3 inches of organic straw mulch around each plant base.",
+    "causes": "The tomato plant shows vigorous vegetative growth, rich green compound leaves, strong branching, and healthy blossom clusters with zero foliar spotting."
+  }
+}
