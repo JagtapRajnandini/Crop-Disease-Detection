@@ -5,7 +5,7 @@ AgriScan AI — Precision Agricultural Intelligence Web Application.
 Full Flask implementation featuring:
 - Commercial Landing Page & Performance Stats
 - SQLite Farmer Authentication & Secure Sessions (Login / Register / Logout)
-- True Two-Stage Foliar Pathology & Lesion Localization (YOLOv8 + ResNet18)
+- Hybrid Foliar Pathology & Lesion Diagnosis (ResNet-50 + SVM)
 - Automated Farm Scan Audit Trail & Outbreak History
 - Interactive Agronomic Prescriptions & Clinical Dossiers
 """
@@ -22,7 +22,7 @@ import numpy as np
 from PIL import Image
 from flask import (
     Flask, render_template, request, redirect, url_for,
-    flash, session, make_response
+    flash, session, make_response, send_from_directory
 )
 from markupsafe import Markup
 
@@ -49,6 +49,12 @@ except Exception as e:
 try:
     from src.inference.predict_two_stage import predict_image
     TWO_STAGE_AVAILABLE = True
+    # Pre-warm AI model into RAM at startup for zero-latency uploads
+    try:
+        from src.models.deep_feature_extractor import get_feature_extractor
+        get_feature_extractor()
+    except Exception as e:
+        print(f"[Notice] Model pre-warm on startup: {e}")
 except ImportError:
     try:
         from src.inference.predict import predict_image
@@ -199,21 +205,36 @@ def get_disease_advisory(condition_key):
     if not condition_key:
         return {}
 
-    cond_clean = condition_key.lower().strip().replace(" ", "_")
+    cond_clean = condition_key.lower().strip().replace(" ", "_").replace("-", "_")
 
     raw_advisory = None
-    # Direct match
-    if cond_clean in ADVISORY_DATA:
-        raw_advisory = ADVISORY_DATA[cond_clean]
+    # 1. Direct or Case-Insensitive Exact Match
+    if condition_key in ADVISORY_DATA:
+        raw_advisory = ADVISORY_DATA[condition_key]
     else:
-        # Substring match
         for k, v in ADVISORY_DATA.items():
-            if k in cond_clean or cond_clean in k:
+            k_clean = k.lower().strip().replace(" ", "_").replace("-", "_")
+            if k_clean == cond_clean:
+                raw_advisory = v
+                break
+
+    # 2. Substring Match across Class Name or Disease
+    if not raw_advisory:
+        for k, v in ADVISORY_DATA.items():
+            k_clean = k.lower().strip().replace(" ", "_").replace("-", "_")
+            if k_clean in cond_clean or cond_clean in k_clean:
+                raw_advisory = v
+                break
+            # Also check disease_name inside advisory
+            d_name = v.get("disease_name", "").lower().strip().replace(" ", "_")
+            if d_name and (d_name in cond_clean or cond_clean in d_name):
                 raw_advisory = v
                 break
 
     if raw_advisory:
         adv = dict(raw_advisory)
+        if not adv.get("disease_name"):
+            adv["disease_name"] = condition_key.replace("___", " - ").replace("_", " ").title()
     else:
         adv = {
             "disease_name": condition_key.replace("_", " ").title(),
@@ -223,12 +244,34 @@ def get_disease_advisory(condition_key):
             "products": []
         }
 
+    # Map symptoms to causes and build treatment description if needed
+    if not adv.get("causes") and adv.get("symptoms"):
+        adv["causes"] = adv["symptoms"]
+    if not adv.get("treatment") and (adv.get("chemical") or adv.get("organic")):
+        treat_parts = []
+        if adv.get("chemical"):
+            treat_parts.append(f"Chemical Control: {', '.join(adv['chemical'])}")
+        if adv.get("organic"):
+            treat_parts.append(f"Organic/Biological: {', '.join(adv['organic'])}")
+        adv["treatment"] = ". ".join(treat_parts) + "."
+
     # Sanitize and validate all product recommendations
     sanitized_products = []
     for p in adv.get("products", []):
         cleaned = clean_product_entry(p)
         if cleaned:
             sanitized_products.append(cleaned)
+
+    # If products list was not defined, use the scientific chemical and organic formulations
+    if not sanitized_products:
+        for c in adv.get("chemical", []):
+            cleaned = clean_product_entry(c)
+            if cleaned:
+                sanitized_products.append(cleaned)
+        for o in adv.get("organic", []):
+            cleaned = clean_product_entry(o)
+            if cleaned:
+                sanitized_products.append(cleaned)
 
     # Dynamic fallback products if active disease but product array was empty
     if not sanitized_products:
@@ -361,6 +404,15 @@ def farm_history():
         healthy_count=healthy_count
     )
 
+# 5b. Serve Saved Crop Scan Images
+@app.route("/user_scans/<path:filename>")
+def serve_user_scan(filename):
+    if not session.get("user"):
+        flash("🔒 Authentication required to view archived scan images.", "warning")
+        return redirect(url_for("login"))
+    scans_dir = PROJECT_ROOT / "user_scans"
+    return send_from_directory(scans_dir, filename)
+
 # 6. Field Diagnostics (Guest & Logged-In Mode)
 @app.route("/diagnostics", methods=["GET", "POST"])
 def diagnostics():
@@ -373,10 +425,8 @@ def diagnostics():
         # Extract Form Controls
         manual_crop = request.form.get("manual_crop", "Auto-Detect via Field Vision")
         plot_id = request.form.get("plot_id", "").strip()
-        try:
-            conf_threshold = float(request.form.get("conf_threshold", 0.15))
-        except ValueError:
-            conf_threshold = 0.15
+        # Standard calibrated operational threshold
+        conf_threshold = 0.15
 
         # Always run the full Two-Stage cascaded pipeline by default
         use_two_stage = True if TWO_STAGE_AVAILABLE else False
@@ -385,17 +435,17 @@ def diagnostics():
         # Read Image into PIL
         try:
             image = Image.open(uploaded.stream).convert("RGB")
-            # Downsample if ultra-high resolution to guarantee rapid inference
-            max_dim = 1600
+            # Fast downsample for instantaneous CPU inference
+            max_dim = 800
             if max(image.size) > max_dim:
-                image.thumbnail((max_dim, max_dim), Image.Resampling.LANCZOS)
+                image.thumbnail((max_dim, max_dim), Image.Resampling.BILINEAR)
         except Exception as e:
             flash(f"Invalid image file: {e}", "danger")
             return redirect(url_for("diagnostics"))
 
         # Run AI Inference Pipeline
         if predict_image is None:
-            flash("Inference model weights not loaded. Please verify yolov8 weights exist.", "danger")
+            flash("Inference model weights not loaded. Please verify ResNet-50 weights exist.", "danger")
             return redirect(url_for("diagnostics"))
 
         try:
@@ -451,6 +501,8 @@ def diagnostics():
         saved_record_id = None
         if session.get("user") and save_scan:
             try:
+                # Store crop specimen image (annotated if generated, else uploaded raw PIL image)
+                specimen_img = result.get("annotated_image") if result.get("annotated_image") is not None else image
                 saved_record_id = save_scan(
                     user_id=session["user"]["id"],
                     plot_id=plot_id,
@@ -459,7 +511,7 @@ def diagnostics():
                     confidence=top_conf if not is_healthy else 0.95,
                     severity=sev_clean,
                     hotspots=0 if is_healthy else num_regions,
-                    image_np=result.get("annotated_image")
+                    image_input=specimen_img
                 )
             except Exception as e:
                 print(f"[Warning] Failed to persist scan: {e}")
@@ -493,8 +545,8 @@ def diagnostics():
             f"Diagnosis       : {diagnosis_clean}\n"
             f"Health Score    : {health_score}% ({health_tier})\n"
             f"Severity Index  : {sev_clean}\n"
-            f"Hotspots Found  : {0 if is_healthy else num_regions}\n"
-            f"Inference Mode  : {'Two-Stage Deep Vision' if use_two_stage else 'Single-Stage YOLO'}\n"
+            f"Foliar Status   : {'Healthy Foliage' if is_healthy else 'Pathogen Detected'}\n"
+            f"Diagnostic Mode : Precision Foliar Scan\n"
             f"Confidence      : {top_conf * 100:.1f}%\n"
             f"=========================================\n"
         )
@@ -504,7 +556,6 @@ def diagnostics():
             result=result,
             selected_crop=manual_crop,
             plot_id=plot_id,
-            conf_threshold=conf_threshold,
             use_two_stage=use_two_stage,
             health_score=health_score,
             health_tier=health_tier,
@@ -513,6 +564,7 @@ def diagnostics():
             is_healthy=is_healthy,
             severity_label=severity_label,
             sev_class=sev_class,
+            sev_clean=sev_clean,
             diagnosis_clean=diagnosis_clean,
             hotspot_val=hotspot_val,
             original_image_data=original_b64,
@@ -530,7 +582,6 @@ def diagnostics():
         result=None,
         selected_crop="Auto-Detect via Field Vision",
         plot_id="",
-        conf_threshold=0.15,
         use_two_stage=TWO_STAGE_AVAILABLE
     )
 
