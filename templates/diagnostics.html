@@ -4,62 +4,39 @@
 
 {% block content %}
 <form id="diagnostics-form" method="post" enctype="multipart/form-data">
+    <!-- Hidden input to guarantee two-stage pipeline runs by default -->
+    <input type="hidden" name="use_two_stage" id="use_two_stage" value="on" />
+
     <div class="layout-container">
 
-        <!-- ── Left Sidebar: Vision Core Settings ────────────────────────────── -->
-        <aside class="sidebar-panel">
-            <h3 class="sidebar-title">⚙️ Vision Core Settings</h3>
-
-            <!-- Sensitivity Slider -->
-            <div class="form-group">
-                <div class="slider-header">
-                    <label class="form-label" for="conf_threshold">Detection Sensitivity</label>
-                    <span id="slider-val" class="slider-val-badge">{{ conf_threshold|default(0.15) }}</span>
-                </div>
-                <input
-                    type="range"
-                    name="conf_threshold"
-                    id="conf_threshold"
-                    min="0.05"
-                    max="0.90"
-                    step="0.05"
-                    value="{{ conf_threshold|default(0.15) }}"
-                    oninput="document.getElementById('slider-val').textContent = parseFloat(this.value).toFixed(2)"
-                />
-                <p class="field-hint">Lower slider to 0.10 to capture subtle or early-stage foliar lesions.</p>
-            </div>
-
-            <!-- Hidden input to guarantee two-stage pipeline runs by default -->
-            <input type="hidden" name="use_two_stage" id="use_two_stage" value="on" />
-
-            <hr class="sidebar-divider" />
-
-            <!-- Session & System Info -->
-            <div class="sidebar-info-card">
-                <h5>👨‍🌾 Field Operator</h5>
-                {% if session.get('user') %}
-                    <p style="font-size: 0.8rem; color: #1B4332;">Logged in: <strong>{{ session['user']['full_name'] }}</strong></p>
-                    {% if session['user']['farm_name'] %}
-                        <p style="font-size: 0.74rem; color: #52796F;">Farm: {{ session['user']['farm_name'] }}</p>
+        <!-- ── Top Horizontal Strip: Field Session & Operator Profile ─────────── -->
+        <div class="session-strip">
+            <div class="session-strip-left">
+                <span class="session-strip-badge">👨‍🌾 Field Session</span>
+                <div class="session-strip-details">
+                    {% if session.get('user') %}
+                        <span>Operator: <strong>{{ session['user']['full_name'] }}</strong></span>
+                        {% if session['user']['farm_name'] %}
+                            <span class="session-divider">•</span>
+                            <span>Farm: <strong>{{ session['user']['farm_name'] }}</strong></span>
+                        {% endif %}
+                        <span class="status-pill-success">✅ Scans Auto-Saved to Farm History</span>
+                    {% else %}
+                        <span>Operating in <strong>Guest Field Mode</strong>. Scans are displayed live. <a href="{{ url_for('login') }}" class="session-login-link">Sign in</a> to save history.</span>
                     {% endif %}
-                    <p style="margin-top: 6px; font-size: 0.74rem; color: #2D6A4F; font-weight: 700;">✅ Scans Auto-Saved to Farm History</p>
-                {% else %}
-                    <p>Operating in <strong>Guest Field Mode</strong>. Scans are displayed live. <a href="{{ url_for('login') }}" style="color: #2D6A4F; font-weight: 700;">Sign in</a> to save history.</p>
-                {% endif %}
-                <div style="margin-top: 10px; font-size: 0.72rem; color: #52796F;">
-                    <strong>Inference Backbone:</strong><br />YOLOv8-Nano + ResNet-18
                 </div>
             </div>
-        </aside>
-
-        <!-- ── Right Main Area: Field Intake & Results ───────────────────────── -->
-        <section class="main-panel">
-
-            <!-- Hero Title Card -->
-            <div class="hero-card">
-                <h2>🔬 Foliar Pathology & Field Diagnostics</h2>
-                <p>Upload crop leaf photographs for two-stage detection, localization, and agronomic prescriptions.</p>
+            <div class="session-strip-right">
+                <span class="status-indicator-dot"></span>
+                <span class="session-status-text"><strong>Diagnostic Status:</strong> Core Active &amp; Field Calibrated</span>
             </div>
+        </div>
+
+        <!-- Hero Title Card -->
+        <div class="hero-card">
+            <h2>🔬 Foliar Pathology & Field Diagnostics</h2>
+            <p>Upload crop leaf photographs for real-time pathology diagnosis, canopy health grading, and agronomic prescriptions.</p>
+        </div>
 
             <!-- Intake Form Card -->
             <div class="intake-card">
@@ -70,9 +47,10 @@
                         <select name="manual_crop" id="manual_crop" class="select-styled">
                             {% set crops = [
                                 'Auto-Detect via Field Vision',
-                                'Apple', 'Bell Pepper', 'Blueberry', 'Cherry',
-                                'Corn', 'Grape', 'Peach', 'Potato', 'Raspberry',
-                                'Soyabean', 'Squash', 'Strawberry', 'Tomato'
+                                'Apple', 'Blueberry', 'Cherry', 'Corn (Maize)',
+                                'Grape', 'Orange (Citrus)', 'Peach', 'Pepper (Bell)',
+                                'Potato', 'Raspberry', 'Soybean', 'Squash',
+                                'Strawberry', 'Tomato'
                             ] %}
                             {% for c in crops %}
                                 <option value="{{ c }}" {% if selected_crop == c %}selected{% endif %}>{{ c }}</option>
@@ -148,7 +126,7 @@
                 <div class="metric-cards-grid">
                     <div class="metric-card">
                         <div class="label">Host Species</div>
-                        <div class="value">{{ result.primary_plant }}</div>
+                        <div class="value">{{ result.primary_plant or result.crop_species or 'Identified Specimen' }}</div>
                     </div>
 
                     <div class="metric-card">
@@ -165,8 +143,8 @@
                     </div>
 
                     <div class="metric-card">
-                        <div class="label">Infection Hotspots</div>
-                        <div class="value">{{ hotspot_val }}</div>
+                        <div class="label">Diagnostic Confidence</div>
+                        <div class="value">{{ (result.highest_confidence * 100)|round(1) }}%</div>
                     </div>
                 </div>
 
@@ -195,24 +173,24 @@
                             {% if original_image_data %}
                             <img src="data:image/jpeg;base64,{{ original_image_data }}" alt="Field Photograph" />
                             {% endif %}
-                            <div class="specimen-caption">Field Photograph (Input)</div>
+                            <div class="specimen-caption">Field Photograph (Input Specimen)</div>
                         </div>
                         <div class="specimen-card">
                             {% if annotated_image_data %}
-                            <img src="data:image/jpeg;base64,{{ annotated_image_data }}" alt="Pathology Localization" />
+                            <img src="data:image/jpeg;base64,{{ annotated_image_data }}" alt="Analyzed Specimen" />
                             {% endif %}
-                            <div class="specimen-caption">Pathology Localization (AI Annotated Specimen)</div>
+                            <div class="specimen-caption">Analyzed Specimen (Foliar Feature Evaluation)</div>
                         </div>
                     </div>
 
                     {% if is_healthy %}
                         <div class="healthy-banner">
                             <h3>✅ Clean Foliar Surface</h3>
-                            <p>Verified healthy leaf structure with optimal canopy health score. No pathogenic lesions were localized on this specimen.</p>
+                            <p>Verified healthy leaf structure with optimal canopy health score. No pathogenic symptoms were identified on this specimen.</p>
                         </div>
                     {% elif detections and detections|length > 0 %}
                         <h4 style="color: var(--primary); font-size: 0.95rem; font-weight: 700; margin-bottom: 10px;">
-                            🎯 Localized Lesion Clusters ({{ detections|length }})
+                            📋 Pathology Diagnostic Breakdown
                         </h4>
                         <div class="data-table-wrapper">
                             <table class="data-table">
@@ -220,17 +198,17 @@
                                     <tr>
                                         <th>Detected Pathology</th>
                                         <th>Host Plant</th>
-                                        <th>AI Confidence</th>
-                                        <th>Bounding Box [X1, Y1, X2, Y2]</th>
+                                        <th>Diagnostic Confidence</th>
+                                        <th>Clinical Severity</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {% for d in detections %}
                                     <tr>
                                         <td><strong>{{ d.class|replace('_', ' ')|title }}</strong></td>
-                                        <td>{{ d.plant }}</td>
+                                        <td><strong>{{ d.plant or result.primary_plant or result.crop_species }}</strong></td>
                                         <td><span class="brand-badge">{{ (d.confidence * 100)|round(1) }}%</span></td>
-                                        <td style="font-family: monospace; font-size: 0.8rem; color: #52796F;">{{ d.box }}</td>
+                                        <td><span class="{{ sev_class }}" style="padding: 4px 12px; font-size: 0.8rem; font-weight: 700; border-radius: 6px; display: inline-block;">{{ d.severity or sev_clean or 'Critical' }}</span></td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
@@ -251,14 +229,15 @@
                             🛡️ Clinical Prescription: {{ advisory.disease_name|default(diagnosis_clean) }}
                         </h3>
 
-                        <div class="advisory-grid">
+                        <!-- 1. Top Row: Root Causes & Cultural Prevention (Side by Side) -->
+                        <div class="advisory-row-dual">
                             <!-- Card 1: Causes -->
                             <div class="adv-card">
                                 <h4>🔍 Root Causes & Etiology</h4>
                                 <p>{{ advisory.causes|default('Lesions detected on the foliar surface. Favored by extended periods of leaf wetness and warm temperatures.')|nl2br }}</p>
                             </div>
 
-                            <!-- Card 2: Prevention -->
+                            <!-- Card 2: Cultural Prevention -->
                             <div class="adv-card">
                                 <h4>🛡️ Cultural Prevention</h4>
                                 {% if advisory.prevention_list %}
@@ -271,24 +250,47 @@
                                     <p>{{ advisory.prevention|default('Prune lower canopy to encourage air circulation. Rotate crops away from susceptible species.')|nl2br }}</p>
                                 {% endif %}
                             </div>
+                        </div>
 
-                            <!-- Card 3: Treatment & Products -->
-                            <div class="adv-card">
-                                <h4>💊 Spray Prescription & Products</h4>
-                                <p>{{ advisory.treatment|default('Apply targeted protective fungicides early in disease onset.')|nl2br }}</p>
-                                
-                                {% if advisory.products %}
-                                    <div style="margin-top: 14px;">
-                                        <div style="font-size: 0.78rem; font-weight: 700; color: var(--primary); text-transform: uppercase; margin-bottom: 6px;">
-                                            Recommended Formulations:
-                                        </div>
+                        <!-- 2. Middle Row: Spray Prescription & Products (Horizontal Strip Format) -->
+                        <div class="adv-strip-card">
+                            <h4>💊 Spray Prescription & Products</h4>
+                            <p>{{ advisory.treatment|default('Apply targeted protective fungicides early in disease onset.')|nl2br }}</p>
+                            
+                            {% if advisory.products %}
+                                <div style="margin-top: 14px; padding-top: 12px; border-top: 1px solid #E8F5E9;">
+                                    <div style="font-size: 0.8rem; font-weight: 700; color: var(--primary); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px;">
+                                        Recommended Formulations:
+                                    </div>
+                                    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
                                         {% for prod in advisory.products %}
                                             <a href="{{ prod.link }}" target="_blank" rel="noopener noreferrer" class="product-pill" title="Search {{ prod.name }} formulation, usage & suppliers">
                                                 🏷️ {{ prod.name }} ↗
                                             </a>
                                         {% endfor %}
                                     </div>
-                                {% endif %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- 3. Bottom Row: Agricultural Extension & Safety Notice (Horizontal Strip Format with 2 Sections) -->
+                        <div class="adv-safety-strip">
+                            <div class="adv-safety-header">
+                                ⚠️ Agricultural Extension & Safety Notice:
+                            </div>
+                            <div class="adv-safety-grid">
+                                <div class="adv-safety-col">
+                                    <div class="safety-sec-title">
+                                        🌱 Simple Guidance:
+                                    </div>
+                                    <p>Always check with your local Agricultural Extension Officer or Krishi Vigyan Kendra (KVK) expert before spraying. They will help you select the exact quantity, confirm safe weather conditions, and ensure the spray is safe for your harvest.</p>
+                                </div>
+                                <div class="adv-safety-col">
+                                    <div class="safety-sec-title">
+                                        🧪 Technical Protocol:
+                                    </div>
+                                    <p>Chemical intervention requires verification of Pre-Harvest Intervals (PHI), Maximum Residue Limits (MRL), spray volume calibration (L/ha), and Fungicide Resistance Action Committee (FRAC) mode-of-action rotation under certified agricultural supervision.</p>
+                                </div>
                             </div>
                         </div>
                     {% endif %}
@@ -308,8 +310,6 @@
 
             </div>
             {% endif %}
-
-        </section>
 
     </div>
 </form>
