@@ -569,7 +569,7 @@ input:checked + .slider-switch:before {
     gap: 10px;
 }
 
-/* Severity Badges (matching original Streamlit) */
+/* Severity Badges */
 .severity-critical {
     background: #FFF0F0;
     border: 1.5px solid #E63946;

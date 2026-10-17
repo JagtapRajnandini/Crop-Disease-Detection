@@ -108,7 +108,7 @@ def nl2br_filter(s):
     escaped = [Markup.escape(line) for line in lines]
     return Markup("<br />").join(escaped)
 
-# ── Health Scoring Logic (Exact match to original Streamlit implementation) ───
+# ── Health Scoring Logic (Canopy Health Index & Foliar Severity) ──────────────
 DISEASE_KEYWORDS = [
     "blight", "spot", "rot", "rust", "scab", "virus", "mold",
     "mildew", "speck", "canker", "mosaic", "yellow"
