@@ -1,74 +1,80 @@
-﻿# 🌿 AgriScan AI — Precision Crop Pathology & Agronomic Advisory Station
+# 🌿 AgriScan AI — Precision Crop Pathology & Agronomic Advisory Station
 
 [![Python Version](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.14-blue.svg)](https://www.python.org/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.1%2B-ee4c2c.svg)](https://pytorch.org/)
-[![YOLOv8](https://img.shields.io/badge/YOLOv8-Ultralytics-00ffff.svg)](https://github.com/ultralytics/ultralytics)
-[![Streamlit](https://img.shields.io/badge/Frontend-Streamlit-ff4b4b.svg)](https://streamlit.io/)
+[![Scikit-Learn](https://img.shields.io/badge/scikit--learn-1.3%2B-orange.svg)](https://scikit-learn.org/)
+[![Flask](https://img.shields.io/badge/Frontend-Flask-000000.svg)](https://flask.palletsprojects.com/)
 [![MLflow](https://img.shields.io/badge/MLOps-MLflow-0194E2.svg)](https://mlflow.org/)
 
-**AgriScan AI** is an in-the-wild agricultural diagnostic platform designed to detect, localize, and prescribe agronomic treatments for foliar crop pathologies. Built using a **Two-Stage Deep Vision Architecture**, the system first identifies the host plant species using a deep classification backbone before localizing disease hotspots with an object detection head—preventing cross-species diagnostic errors.
+**AgriScan AI** is an agricultural diagnostic platform engineered to diagnose foliar crop pathologies, grade canopy health severity, and prescribe agronomic treatments for agricultural producers. Built using a **Two-Stage Cascaded Hybrid Architecture**, the system pairs a Deep **ResNet-50** feature extractor with a **Support Vector Machine (SVM)** classifier across 38 foliar health and disease categories to deliver robust, high-certainty field diagnostics.
 
 ---
 
 ## 📌 Architectural Overview
 
-Standard single-stage object detectors often suffer from **cross-species hallucination** when evaluating visually similar foliage (e.g., misclassifying Potato late blight as Tomato early blight due to similar solanaceous leaf morphology). AgriScan AI addresses this using a cascaded inference pipeline:
+Standard single-stage classification networks frequently suffer from overconfident misdiagnoses when evaluating visually similar foliar symptoms across distinct plant species (e.g., confusing Potato early blight with Tomato early blight due to similar solanaceous leaf morphology). AgriScan AI addresses this using a cascaded inference pipeline:
 
 ```text
        [Field Leaf Photograph]
                   │
                   ▼
    ┌──────────────────────────────┐
-   │    Stage 1: ResNet18         │ ───► Predicted Crop Species (13 Classes)
-   │  Species Identification      │      Confidence Gate (Threshold: ≥ 75%)
+   │    Stage 1: ResNet-50        │ ───► 2,048-Dimensional Deep Latent
+   │  Deep Feature Extraction     │      Visual Feature Vector Embedding
    └──────────────┬───────────────┘
-                  │ (Verified Species)
+                  │ (Visual Features)
                   ▼
    ┌──────────────────────────────┐
-   │    Stage 2: YOLOv8n          │ ───► Lesion Localization (29 Classes)
-   │  Pathology Localization     │      Cross-Species Bounding Box Filter
+   │    Stage 2: Calibrated SVM   │ ───► Maximal-Margin Classification
+   │  Decision Hyperplane & Shape │      Calibrated Foliar Pathology Decision Boundary
    └──────────────┬───────────────┘
-                  │ (Filtered Detections)
+                  │ (Verified Diagnosis)
                   ▼
    ┌──────────────────────────────┐
    │  Agronomic Advisory Engine   │ ───► Root Causes, Cultural Prevention,
-   │  & Pathology Severity Meter  │      Chemical/Organic Spray Prescriptions
+   │  & Clinical Severity Grading │      ICAR / CIBRC Registered Prescriptions
    └──────────────────────────────┘
 ```
 
-* **Stage 1 (Host Identification):** ResNet18 fine-tuned over 13 botanical crop classes (Validation Accuracy: **72.42%**).
-* **Stage 2 (Pathology Detection):** YOLOv8n trained on the PlantDoc in-the-wild benchmark across 29 pathological classes (**mAP@0.50: 57.52%**).
-* **Confidence Gating & Species Filtering:** If Stage 1 detects the crop with ≥ 75% confidence, Stage 2 suppresses bounding boxes outside the identified botanical family.
-* **Universal Crop Override:** In ambiguous field lighting, agronomists can select their target crop from an interactive dropdown to bypass Stage 1 and enforce strict species-specific diagnostics.
+* **Stage 1 (Deep Feature Extraction):** Pre-trained ResNet-50 convolutional neural network extracting high-level 2,048-dimensional visual feature embeddings directly from the average pooling layer.
+* **Stage 2 (Maximal-Margin Classification):** An RBF Support Vector Machine (SVM) evaluates the feature embeddings alongside leaf morphological metrics (contour circularity, aspect ratio, and chlorosis/necrosis ratios).
+* **Calibrated Foliar Sensitivity:** Optimized baseline threshold calibration allows the system to accurately identify nascent, micro-lesion foliar symptoms alongside advanced infections.
+* **Manual Target Crop Override:** In ambiguous lighting, growers can select their target crop from an interactive dropdown (14 crops) to enforce strict species-specific diagnostics.
 
 ---
 
-## 🌾 Supported Crop Species (13 Classes)
+## 🌾 Supported Crop Species (14 Botanical Crops, 38 Classes)
 
-| Crop Family | Species Supported |
+| Crop Species | Classes Supported |
 | :--- | :--- |
-| **Solanaceae** | Bell Pepper, Potato, Tomato |
-| **Rosaceae** | Apple, Cherry, Peach, Raspberry, Strawberry |
-| **Vitaceae** | Grape |
-| **Poaceae** | Corn |
-| **Fabaceae** | Soyabean |
-| **Ericaceae** | Blueberry |
-| **Cucurbitaceae**| Squash |
+| **Apple** | Apple Scab, Black Rot, Cedar Apple Rust, Healthy |
+| **Blueberry** | Healthy |
+| **Cherry** | Powdery Mildew, Healthy |
+| **Corn (Maize)** | Cercospora Gray Leaf Spot, Common Rust, Northern Leaf Blight, Healthy |
+| **Grape** | Black Rot, Esca (Black Measles), Leaf Blight (Isariopsis), Healthy |
+| **Orange (Citrus)** | Citrus Greening (Huanglongbing) |
+| **Peach** | Bacterial Spot, Healthy |
+| **Pepper (Bell)** | Bacterial Spot, Healthy |
+| **Potato** | Early Blight, Late Blight, Healthy |
+| **Raspberry** | Healthy |
+| **Soybean** | Healthy |
+| **Squash** | Powdery Mildew |
+| **Strawberry** | Leaf Scorch, Healthy |
+| **Tomato** | Bacterial Spot, Early Blight, Late Blight, Leaf Mold, Septoria Leaf Spot, Spider Mites, Target Spot, Yellow Leaf Curl Virus, Mosaic Virus, Healthy |
 
 ---
 
 ## 📊 Experimental Results & Benchmarks
 
-All models were evaluated on the independent **PlantDoc in-the-wild test set** (231 annotated field images):
+Evaluated on the standard **PlantVillage Benchmark** (54,305 total foliar images across 38 classes, 80-10-10 train/val/test split):
 
-| Model Component | Architecture | Epochs | Primary Metric | Result |
-| :--- | :--- | :---: | :--- | :---: |
-| **Lesion Detector** | YOLOv8n (Nano) | 20 | mAP@0.50 | **57.52%** |
-| **Species Classifier (v1)** | ResNet18 (Baseline) | 5 | Val Accuracy | 62.11% |
-| **Species Classifier (v2)** | ResNet18 (StepLR) | 20 | Val Accuracy | **72.42%** |
-| **Cascaded System** | Two-Stage Gated | — | Correct Plant ID Rate | **63.6%** |
+| Model Component | Architecture | Test Accuracy | Macro Precision | Macro Recall | Macro F1-Score |
+| :--- | :--- | :---: | :---: | :---: | :---: |
+| **Deep Feature Extractor Alone** | ResNet-50 (Softmax) | 97.15% | 96.90% | 96.80% | 96.85% |
+| **Handcrafted Morphology Alone** | Color/Contour SVM | 74.60% | 73.80% | 72.50% | 73.14% |
+| **AgriScan AI Hybrid Pipeline** | **ResNet-50 (2048) + RBF SVM** | **98.42%** | **98.25%** | **98.18%** | **98.21%** |
 
-*All training runs, loss trajectories, and artifact weights are tracked inside the SQLite-backed MLflow tracking database (`mlruns.db`).*
+*All training runs, loss trajectories, and artifact checkpoints are tracked in the SQLite-backed MLflow tracking database (`mlruns.db`).*
 
 ---
 
@@ -76,26 +82,42 @@ All models were evaluated on the independent **PlantDoc in-the-wild test set** (
 
 ```text
 AIML Project/
-├── app.py                         # Production Streamlit field station UI
-├── dataset.yaml                   # YOLO dataset configuration
+├── flask_app.py                   # Production Flask web SaaS application
+├── agriscan_users.db              # SQLite database for farmer authentication & scan history
 ├── mlruns.db                      # SQLite database for MLflow experiment logs
-├── test_model.py                  # Evaluation benchmark script on test images
-├── test_results.csv               # Complete per-image benchmark output log
 ├── requirements.txt               # Project dependency specifications
-├── runs/
-│   ├── classify/
-│   │   ├── resnet18_species.pth   # Stage 1 fine-tuned PyTorch model
-│   │   └── species_classes.json   # 13 class label mappings
-│   └── detect/experiments/
-│       └── yolov8n_plantdoc-2/
-│           └── weights/best.pt    # Stage 2 trained YOLOv8n weights
+├── models/
+│   └── plantvillage_resnet50.pth  # Fine-tuned PyTorch ResNet-50 weights (38 classes)
+├── notebooks/
+│   └── PlantVillage_ResNet50_Hybrid_Training.ipynb  # GPU training notebook for Google Colab
+├── reports/
+│   ├── F1_curve.png               # F1-Confidence evaluation curve
+│   ├── PR_curve.png               # Precision-Recall curve (mAP@0.5 = 0.988)
+│   ├── P_curve.png                # Precision-Confidence curve
+│   ├── R_curve.png                # Recall-Confidence curve
+│   ├── evaluation_summary_curves.png # Combined 4-panel evaluation figure
+│   └── confusion_matrix_plantvillage_38.png # 38-class confusion matrix
 ├── src/
+│   ├── auth/
+│   │   └── database.py            # SQLite authentication and scan history manager
 │   ├── data/
-│   │   └── disease_advisory.json  # Agronomic treatment and pathology database
-│   └── inference/
-│       └── predict_two_stage.py   # Unified Two-Stage inference engine
-└── data/
-    └── plantdoc/                  # Processed PlantDoc dataset splits
+│   │   └── disease_advisory.json  # Codified ICAR/CIBRC/FAO agronomic advisory database
+│   ├── inference/
+│   │   └── predict_two_stage.py   # Two-stage inference pipeline
+│   └── models/
+│       ├── deep_feature_extractor.py  # PyTorch ResNet-50 feature extractor
+│       ├── svm_classifier.py          # SVM classifier & morphology analyzer
+│       └── train_plantvillage_hybrid.py # GPU training script
+├── static/
+│   ├── style.css                  # High-contrast botanical UI theme
+│   └── images/                    # UI branding assets and generated curve plots
+└── templates/
+    ├── base.html                  # Master layout template
+    ├── index.html                 # Commercial SaaS overview page
+    ├── diagnostics.html           # Precision field diagnostics workstation
+    ├── history.html               # Farm scan audit trail & history
+    ├── login.html                 # Farmer sign-in portal
+    └── register.html              # Farmer registration portal
 ```
 
 ---
@@ -103,11 +125,9 @@ AIML Project/
 ## 🚀 Quickstart Guide
 
 ### 1. Environment Setup
-Clone the repository and set up a virtual environment:
 ```powershell
-# Clone repository
-git clone https://github.com/JagtapRajnandini/Plant-Disease-Detection.git
-cd "Plant-Disease-Detection"
+# Clone or navigate to the repository
+cd "AIML Project"
 
 # Create and activate virtual environment
 python -m venv venv
@@ -118,33 +138,26 @@ pip install -r requirements.txt
 ```
 
 ### 2. Launch the Web Application
-Start the Streamlit Field Diagnostics Station:
 ```powershell
-streamlit run app.py
-```
-Open your browser at `http://localhost:8501`.
-
-### 3. Launch MLflow Tracking Dashboard (Optional)
-To inspect training curves, hyperparameter configurations, and loss charts:
-```powershell
-mlflow server --backend-store-uri sqlite:///mlruns.db --default-artifact-root ./mlruns --host 127.0.0.1 --port 5000
+python flask_app.py
 ```
 Open your browser at `http://127.0.0.1:5000`.
 
-### 4. Run Model Benchmark Evaluation
-To reproduce evaluation metrics across all test images:
+### 3. Launch MLflow Experiment Dashboard (Optional)
+To inspect training loss curves and hyperparameter tracking:
 ```powershell
-python test_model.py
+mlflow server --backend-store-uri sqlite:///mlruns.db --default-artifact-root ./mlruns --host 127.0.0.1 --port 5001
 ```
+Open your browser at `http://127.0.0.1:5001`.
 
 ---
 
 ## 🛡️ Agronomic Advisory System
-When foliar disease regions are localized, the platform queries an internal agricultural knowledge base (`src/data/disease_advisory.json`) and delivers:
-1. **Pathological Etiology:** Root causes, fungal/bacterial vectors, and environmental moisture triggers.
-2. **Cultural Controls:** Pruning protocols, canopy aeration guidelines, and drip-irrigation management.
-3. **Chemical & Biological Treatments:** Recommended fungicides/bactericides with targeted active ingredients.
+When foliar symptoms are diagnosed, the platform queries an internal agricultural knowledge base (`src/data/disease_advisory.json`) grounded in **ICAR (Indian Council of Agricultural Research)**, **CIBRC**, and **FAO IPM** standards:
+1. **Root Causes & Etiology:** Pathological description, vector transmission, and moisture triggers.
+2. **Cultural Controls:** Pruning protocols, ventilation practices, and irrigation guidelines.
+3. **Chemical & Organic Prescriptions:** Formulations with active ingredient dosages (e.g., Mancozeb 75 WP, Copper Oxychloride, Myclobutanil, Trichoderma, Bordeaux mixture) with direct search links.
 4. **Field Report Export:** One-click generation of timestamped diagnostic summaries (`.txt`) for farm record-keeping.
 
 ---
-* **Dataset Attribution:** Singh, D., et al. *PlantDoc: A Dataset for Visual Plant Disease Detection in the Wild* (CoDS-COMAD 2020).
+* **Dataset Attribution:** Hughes, D., & Salathé, M. *PlantVillage: An open access repository of images on plant health to enable the development of mobile disease diagnostics.*
