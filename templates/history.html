@@ -45,18 +45,31 @@
                 <thead>
                     <tr>
                         <th>Date & Time</th>
+                        <th>Specimen</th>
                         <th>Plot / Bed ID</th>
                         <th>Crop</th>
                         <th>Diagnosis</th>
                         <th>Severity</th>
                         <th>Certainty</th>
-                        <th>Hotspots</th>
+                        <th>Foliar Status</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for s in scans %}
                     <tr>
-                        <td style="color: #52796F; font-size: 0.82rem;">{{ s.created_at }}</td>
+                        <td style="color: #52796F; font-size: 0.82rem; white-space: nowrap;">{{ s.created_at }}</td>
+                        <td style="text-align: center;">
+                            {% if s.image_path %}
+                                <a href="/{{ s.image_path }}" target="_blank" title="View Full Crop Specimen (New Tab)">
+                                    <img src="/{{ s.image_path }}" alt="{{ s.crop_species }}" 
+                                         style="width: 44px; height: 44px; object-fit: cover; border-radius: 8px; border: 1.5px solid #A7D7B5; box-shadow: 0 2px 6px rgba(27,67,50,0.12); vertical-align: middle; cursor: pointer; transition: transform 0.18s ease;" 
+                                         onmouseover="this.style.transform='scale(1.15)'" 
+                                         onmouseout="this.style.transform='scale(1)'" />
+                                </a>
+                            {% else %}
+                                <span style="color: #94A3B8; font-size: 0.76rem;">No Photo</span>
+                            {% endif %}
+                        </td>
                         <td><strong>{{ s.plot_id }}</strong></td>
                         <td>{{ s.crop_species }}</td>
                         <td>{{ s.primary_condition }}</td>
@@ -70,7 +83,7 @@
                             {% endif %}
                         </td>
                         <td><span class="brand-badge">{{ (s.confidence * 100)|round(1) }}%</span></td>
-                        <td>{{ s.hotspots_count }}</td>
+                        <td style="font-weight: 600; color: {{ '#9D0208' if s.hotspots_count > 0 else '#2D6A4F' }};">{{ 'Infected' if s.hotspots_count > 0 else 'Clean' }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
