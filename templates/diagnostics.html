@@ -29,22 +29,8 @@
                 <p class="field-hint">Lower slider to 0.10 to capture subtle or early-stage foliar lesions.</p>
             </div>
 
-            <!-- Two-Stage Deep Vision Toggle -->
-            <div class="toggle-wrapper">
-                <div class="toggle-info">
-                    <div class="toggle-title">Two-Stage Deep Vision</div>
-                    <div class="toggle-sub">ResNet18 species filter + YOLOv8</div>
-                </div>
-                <label class="switch">
-                    <input
-                        type="checkbox"
-                        name="use_two_stage"
-                        id="use_two_stage"
-                        {% if use_two_stage is not defined or use_two_stage %}checked{% endif %}
-                    />
-                    <span class="slider-switch"></span>
-                </label>
-            </div>
+            <!-- Hidden input to guarantee two-stage pipeline runs by default -->
+            <input type="hidden" name="use_two_stage" id="use_two_stage" value="on" />
 
             <hr class="sidebar-divider" />
 
@@ -297,7 +283,7 @@
                                             Recommended Formulations:
                                         </div>
                                         {% for prod in advisory.products %}
-                                            <a href="{{ prod.link }}" target="_blank" class="product-pill">
+                                            <a href="{{ prod.link }}" target="_blank" rel="noopener noreferrer" class="product-pill" title="Search {{ prod.name }} formulation, usage & suppliers">
                                                 🏷️ {{ prod.name }} ↗
                                             </a>
                                         {% endfor %}

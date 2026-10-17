@@ -7,7 +7,7 @@ venv/
 env/
 
 # Datasets (Do not push heavy image folders)
-data/
+/data/
 plant_doc_detection_dataset/
 plant_diseases/
 

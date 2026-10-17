@@ -16,6 +16,7 @@ import io
 import json
 import base64
 from datetime import datetime
+import urllib.parse
 import yaml
 import numpy as np
 from PIL import Image
@@ -158,6 +159,41 @@ def image_to_base64(img_input):
     img_pil.save(buffer, format="JPEG", quality=90)
     return base64.b64encode(buffer.getvalue()).decode("utf-8")
 
+# ── Helper: Clean Product Formulations & Live Links ────────────────────────────
+def clean_product_entry(prod):
+    """
+    Sanitizes product name and ensures all links are active Google search queries
+    for genuine agricultural fungicides and formulations (never broken example.com links).
+    """
+    if isinstance(prod, str):
+        name = prod.strip()
+        link = ""
+    elif isinstance(prod, dict):
+        name = str(prod.get("name", "")).strip()
+        link = str(prod.get("link", "")).strip()
+    else:
+        return None
+
+    # Normalize special unicode spaces and superscripts
+    name = (
+        name.replace("\u202f", " ")
+        .replace(" ", " ")
+        .replace("⁻¹", "/L")
+        .replace("L⁻¹", "L")
+        .replace("–", "-")
+        .strip()
+    )
+
+    if not name:
+        return None
+
+    # If link is broken, missing, or example.com, generate an active Google search link
+    if not link or "example.com" in link or not (link.startswith("http://") or link.startswith("https://")):
+        query = f"{name} fungicide agricultural treatment"
+        link = f"https://www.google.com/search?q={urllib.parse.quote_plus(query)}"
+
+    return {"name": name, "link": link}
+
 # ── Helper: Resolve Advisory ───────────────────────────────────────────────────
 def get_disease_advisory(condition_key):
     if not condition_key:
@@ -165,22 +201,67 @@ def get_disease_advisory(condition_key):
 
     cond_clean = condition_key.lower().strip().replace(" ", "_")
 
+    raw_advisory = None
     # Direct match
     if cond_clean in ADVISORY_DATA:
-        return ADVISORY_DATA[cond_clean]
+        raw_advisory = ADVISORY_DATA[cond_clean]
+    else:
+        # Substring match
+        for k, v in ADVISORY_DATA.items():
+            if k in cond_clean or cond_clean in k:
+                raw_advisory = v
+                break
 
-    # Substring match
-    for k, v in ADVISORY_DATA.items():
-        if k in cond_clean or cond_clean in k:
-            return v
+    if raw_advisory:
+        adv = dict(raw_advisory)
+    else:
+        adv = {
+            "disease_name": condition_key.replace("_", " ").title(),
+            "causes": "Foliar lesion or necrotic pathogen observed on specimen surface.",
+            "prevention": "Inspect adjacent crop canopy. Maintain optimal plant spacing to allow ventilation and foliage drying.",
+            "treatment": "Consult regional agricultural extension office for appropriate therapeutic spraying.",
+            "products": []
+        }
 
-    return {
-        "disease_name": condition_key.replace("_", " ").title(),
-        "causes": "Foliar lesion or necrotic pathogen observed on specimen surface.",
-        "prevention": "Inspect adjacent crop canopy. Maintain optimal plant spacing to allow ventilation and foliage drying.",
-        "treatment": "Consult regional agricultural extension office for appropriate therapeutic spraying.",
-        "products": []
-    }
+    # Sanitize and validate all product recommendations
+    sanitized_products = []
+    for p in adv.get("products", []):
+        cleaned = clean_product_entry(p)
+        if cleaned:
+            sanitized_products.append(cleaned)
+
+    # Dynamic fallback products if active disease but product array was empty
+    if not sanitized_products:
+        cond_check = cond_clean.lower()
+        if any(d in cond_check for d in ["blight", "spot", "rot", "rust", "mold", "mildew", "virus", "mite"]):
+            if "bacteri" in cond_check or "spot" in cond_check:
+                sanitized_products = [
+                    clean_product_entry({"name": "Copper Hydroxide 20 g/L (Kocide 3000)", "link": ""}),
+                    clean_product_entry({"name": "Chlorothalonil 500 g/L Protectant", "link": ""})
+                ]
+            elif "rust" in cond_check:
+                sanitized_products = [
+                    clean_product_entry({"name": "Propiconazole 80 g/L (Tilt Fungicide)", "link": ""}),
+                    clean_product_entry({"name": "Pyraclostrobin 20 g/L (Headline)", "link": ""})
+                ]
+            elif "mildew" in cond_check:
+                sanitized_products = [
+                    clean_product_entry({"name": "Wettable Sulfur 80% WDG", "link": ""}),
+                    clean_product_entry({"name": "Myclobutanil 40 g/L (Rally 40W)", "link": ""})
+                ]
+            elif "virus" in cond_check or "mite" in cond_check:
+                sanitized_products = [
+                    clean_product_entry({"name": "Cold-Pressed Neem Oil Miticide", "link": ""}),
+                    clean_product_entry({"name": "Insecticidal Potassium Soap 5%", "link": ""})
+                ]
+            else:
+                sanitized_products = [
+                    clean_product_entry({"name": "Mancozeb 75% WP (Dithane M-45)", "link": ""}),
+                    clean_product_entry({"name": "Copper Oxychloride 50 g/L", "link": ""})
+                ]
+
+    adv["products"] = sanitized_products
+    return adv
 
 # ── Routes ─────────────────────────────────────────────────────────────────────
 
@@ -297,7 +378,8 @@ def diagnostics():
         except ValueError:
             conf_threshold = 0.15
 
-        use_two_stage = request.form.get("use_two_stage") == "on" if TWO_STAGE_AVAILABLE else False
+        # Always run the full Two-Stage cascaded pipeline by default
+        use_two_stage = True if TWO_STAGE_AVAILABLE else False
         crop_override = None if manual_crop == "Auto-Detect via Field Vision" else manual_crop
 
         # Read Image into PIL

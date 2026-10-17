@@ -28,7 +28,7 @@
 
 <!-- ── 2. Guest / Logged-in Advisory Notice ─────────────────────────────────── -->
 {% if not session.get('user') %}
-    <div style="padding: 14px 20px; background: #E8F5E9; border-radius: 14px; border: 1px solid #C8E6C9; color: #2D6A4F; font-size: 0.92rem; font-weight: 600; margin-bottom: 32px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+    <div style="padding: 16px 22px; background: #FFFFFF; border-radius: 16px; border: 1.5px solid #86EFAC; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14); color: #1B4332; font-size: 0.92rem; font-weight: 600; margin-bottom: 32px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
         <div>
             💡 <strong>Guest Mode Active:</strong> You can run live disease scans freely right now. Sign in or register above to unlock your permanent <strong>Farm Audit History</strong> and outbreak tracking.
         </div>
@@ -47,14 +47,6 @@
     <div class="stats-card">
         <div class="stats-number">13</div>
         <div class="stats-label">Botanical Crops</div>
-    </div>
-    <div class="stats-card">
-        <div class="stats-number">57.5%</div>
-        <div class="stats-label">Detector mAP@0.50</div>
-    </div>
-    <div class="stats-card">
-        <div class="stats-number">&lt; 100ms</div>
-        <div class="stats-label">Inference Latency</div>
     </div>
 </div>
 
