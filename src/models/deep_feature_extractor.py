@@ -1,17 +1,23 @@
 """
 deep_feature_extractor.py
 ---------------------------
-Stage 1: Deep Learning Module (PyTorch ResNet-50).
-Extracts 2,048 high-dimensional spatial/visual features from raw leaf images.
+Stage 1: Deep Learning Feature Extraction Module (Fine-Tuned PyTorch ResNet-50).
+Extracts 2,048-dimensional high-level latent embeddings directly from the
+global average pooling layer of the fine-tuned PlantVillage ResNet-50 network.
 """
 
 from pathlib import Path
 import torch
 import torch.nn as nn
-from torchvision import models, transforms
+from torchvision import transforms
 from PIL import Image
+from transformers import ResNetConfig, ResNetForImageClassification
 
-# Standard ImageNet normalization pipeline for ResNet-50
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+MODEL_WEIGHTS_PATH = PROJECT_ROOT / "models" / "plantvillage_resnet50.pth"
+CONFIG_PATH = PROJECT_ROOT / "models" / "config.json"
+
+# Standard ImageNet normalization pipeline for 224x224 ResNet-50 input tensors
 TRANSFORM = transforms.Compose([
     transforms.Resize((224, 224)),
     transforms.ToTensor(),
@@ -19,25 +25,39 @@ TRANSFORM = transforms.Compose([
 ])
 
 class DeepFeatureExtractor(nn.Module):
-    """ResNet-50 Convolutional Neural Network used as a Deep Visual Feature Extractor."""
+    """Fine-tuned ResNet-50 backbone extracting 2,048-D deep semantic feature embeddings."""
+
     def __init__(self):
         super().__init__()
-        # Load pretrained ResNet-50 backbone
-        base_model = models.resnet50(weights=models.ResNet50_Weights.DEFAULT)
-        # Remove the final classification layer, keeping the 2,048-dim feature pool
-        self.feature_extractor = nn.Sequential(*list(base_model.children())[:-1])
-        self.feature_extractor.eval()
+        if CONFIG_PATH.exists() and MODEL_WEIGHTS_PATH.exists():
+            self.config = ResNetConfig.from_pretrained(str(CONFIG_PATH))
+            self.full_model = ResNetForImageClassification(self.config)
+            state_dict = torch.load(str(MODEL_WEIGHTS_PATH), map_location="cpu")
+            self.full_model.load_state_dict(state_dict)
+            self.id2label = self.config.id2label
+        else:
+            raise FileNotFoundError(f"Model artifacts missing: {MODEL_WEIGHTS_PATH} or {CONFIG_PATH}")
+
+        self.full_model.eval()
 
     def forward(self, x):
+        """Passes input tensor through backbone and extracts (Batch, 2048) pooling vector."""
         with torch.no_grad():
-            features = self.feature_extractor(x)
-            # Flatten from (Batch, 2048, 1, 1) to (Batch, 2048)
-            return torch.flatten(features, 1)
+            out = self.full_model.resnet(x)
+            # Global Average Pooling output: (Batch, 2048)
+            features = out.pooler_output.squeeze(-1).squeeze(-1)
+            return features
 
-# Global feature extractor instance
+    def classify_features(self, features: torch.Tensor):
+        """Evaluates 2,048-D feature embeddings through the classification head."""
+        with torch.no_grad():
+            logits = self.full_model.classifier(features)
+            return logits
+
+# Singleton instance
 _EXTRACTOR = None
 
-def get_feature_extractor():
+def get_feature_extractor() -> DeepFeatureExtractor:
     global _EXTRACTOR
     if _EXTRACTOR is None:
         _EXTRACTOR = DeepFeatureExtractor()
@@ -46,7 +66,7 @@ def get_feature_extractor():
 def extract_features(image_input) -> torch.Tensor:
     """
     Accepts either an image path (str/Path) or a PIL Image object.
-    Passes leaf image through ResNet-50 and returns 2,048-dim visual features.
+    Returns 2,048-dim latent visual feature embedding tensor of shape (1, 2048).
     """
     if isinstance(image_input, (str, Path)):
         path = Path(image_input)
@@ -56,7 +76,6 @@ def extract_features(image_input) -> torch.Tensor:
     elif isinstance(image_input, Image.Image):
         image = image_input.convert("RGB")
     else:
-        # Array or other format
         image = Image.fromarray(image_input).convert("RGB")
 
     image_tensor = TRANSFORM(image).unsqueeze(0)  # Shape: (1, 3, 224, 224)
