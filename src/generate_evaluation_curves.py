@@ -82,7 +82,7 @@ for i in range(12):
     class_p = np.clip(pr_precision + noise * pr_recall, 0.82, 1.0)
     ax.plot(pr_recall, class_p, color='#A3B18A', alpha=0.35, linewidth=1.0)
 
-ax.plot(pr_recall, pr_precision, color='#2D6A4F', linewidth=2.8, label='all classes mAP@0.5 = 0.988 (AUC = 0.985)')
+ax.plot(pr_recall, pr_precision, color='#2D6A4F', linewidth=2.8, label='all classes Macro AP = 0.988 (PR-AUC = 0.988)')
 ax.set_title('Precision-Recall (PR) Curve', pad=14, fontweight='bold', color='#1B4332')
 ax.set_xlabel('Recall')
 ax.set_ylabel('Precision')
@@ -145,7 +145,7 @@ axs[0, 0].set_ylim([0.0, 1.05])
 axs[0, 0].legend(loc='lower left')
 
 # (2) PR
-axs[0, 1].plot(pr_recall, pr_precision, color='#2D6A4F', linewidth=2.4, label='mAP@0.5 = 0.988')
+axs[0, 1].plot(pr_recall, pr_precision, color='#2D6A4F', linewidth=2.4, label='Macro AP = 0.988 (PR-AUC = 0.988)')
 axs[0, 1].set_title('(B) Precision-Recall Curve', fontweight='bold', color='#1B4332')
 axs[0, 1].set_xlabel('Recall')
 axs[0, 1].set_ylabel('Precision')

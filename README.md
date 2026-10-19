@@ -145,20 +145,27 @@ AIML Project/
 ## 🚀 Quickstart Guide
 
 ### 1. Environment Setup
-```powershell
-# Navigate to the project root
-cd "c:\Users\rajna\OneDrive\Desktop\AIML Project"
+```bash
+# Clone the repository and navigate to root
+git clone https://github.com/JagtapRajnandini/Crop-Disease-Detection.git
+cd Crop-Disease-Detection
 
 # Create and activate virtual environment
 python -m venv venv
+
+# On Windows (PowerShell):
 .\venv\Scripts\Activate.ps1
+# On macOS / Linux:
+source venv/bin/activate
 
 # Install core dependencies
 pip install -r requirements.txt
 ```
 
+> **Note on Model Weights:** Ensure the trained PyTorch weights file `plantvillage_resnet50.pth` (94.7 MB) is present inside the `models/` folder.
+
 ### 2. Launch the Web Application
-```powershell
+```bash
 python flask_app.py
 ```
 Open your browser at `http://127.0.0.1:5000` to access the AgriScan AI diagnostics workstation.
