@@ -107,7 +107,7 @@ AIML Project/
 │
 ├── reports/                             # Evaluation artifacts & curves
 │   ├── F1_curve.png                     # F1-Confidence curve
-│   ├── PR_curve.png                     # Precision-Recall curve (mAP@0.5 = 0.988)
+│   ├── PR_curve.png                     # Precision-Recall curve (Macro AP = 0.988)
 │   ├── P_curve.png                      # Precision-Confidence curve
 │   ├── R_curve.png                      # Recall-Confidence curve
 │   ├── evaluation_summary_curves.png    # 4-panel combined evaluation figure
@@ -191,3 +191,11 @@ When foliar symptoms are diagnosed, the platform queries an internal agronomic k
 
 ## 📚 Dataset Attribution
 Hughes, D. P., & Salathé, M. (2015). *An open access repository of images on plant health to enable the development of mobile disease diagnostics.* arXiv:1511.08060.
+
+---
+
+## 👥 Project Team
+
+* **Janhavi Athalye**
+* **Hansini Hange**
+* **Rajnandini Jagtap**
