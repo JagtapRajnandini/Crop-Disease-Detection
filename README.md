@@ -99,6 +99,7 @@ AIML Project/
 │
 ├── models/                              # Trained model artifacts & configs
 │   ├── plantvillage_resnet50.pth        # Trained PyTorch ResNet-50 weights (94.7 MB)
+│   ├── plantvillage_svm_model.pkl       # Trained RBF-SVM decision engine (3.2 MB)
 │   ├── config.json                      # Architecture hyperparameters & 38-class labels
 │   └── preprocessor_config.json         # ImageNet tensor normalization parameters
 │
@@ -162,7 +163,7 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-> **Note on Model Weights:** Ensure the trained PyTorch weights file `plantvillage_resnet50.pth` (94.7 MB) is present inside the `models/` folder.
+> **Note on Model Weights:** Ensure the trained PyTorch weights file `plantvillage_resnet50.pth` (94.7 MB) and RBF-SVM classifier `plantvillage_svm_model.pkl` (3.2 MB) are present inside the `models/` folder.
 
 ### 2. Launch the Web Application
 ```bash
