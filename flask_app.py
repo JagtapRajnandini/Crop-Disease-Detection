@@ -49,10 +49,12 @@ except Exception as e:
 try:
     from src.inference.predict_two_stage import predict_image
     TWO_STAGE_AVAILABLE = True
-    # Pre-warm AI model into RAM at startup for zero-latency uploads
+    # Pre-warm AI models into RAM at startup for zero-latency uploads
     try:
         from src.models.deep_feature_extractor import get_feature_extractor
+        from src.models.svm_classifier import get_svm_classifier
         get_feature_extractor()
+        get_svm_classifier()
     except Exception as e:
         print(f"[Notice] Model pre-warm on startup: {e}")
 except ImportError:
