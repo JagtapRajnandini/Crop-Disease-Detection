@@ -8,6 +8,7 @@ and field scan history persistence.
 
 import sqlite3
 import hashlib
+import re
 from pathlib import Path
 from datetime import datetime
 try:
@@ -73,15 +74,34 @@ def init_db():
 
 def register_user(username, password, full_name, farm_name="", location=""):
     """
-    Registers a new farmer.
+    Registers a new farmer with field validations.
     Returns: (success: bool, message: str)
     """
-    username = username.strip().lower()
+    full_name = full_name.strip()
+    farm_name = farm_name.strip()
+    location = location.strip()
+    username = username.strip()
+
     if not username or not password or not full_name:
         return False, "Username, password, and full name are required."
 
+    # 1. Full name validation: numbers or signs cannot be entered
+    if not re.match(r"^[A-Za-z\s]+$", full_name) or len(full_name) < 2:
+        return False, "Full Name cannot contain numbers or special characters."
+
+    # 2. Location validation: must be a valid location, not any random numbers
+    if location:
+        if re.search(r"\d", location) or not re.match(r"^[A-Za-z\s,.-]+$", location) or len(location) < 2:
+            return False, "District / Location must be a valid location name and cannot contain numbers."
+
+    # 3. Username validation: must start with an alphabetical character
+    if not re.match(r"^[A-Za-z]", username):
+        return False, "Username must start with an alphabetical character."
+
     if len(password) < 4:
         return False, "Password must be at least 4 characters."
+
+    username = username.lower()
 
     pwd_hash = hash_password(password)
 
