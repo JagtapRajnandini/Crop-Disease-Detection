@@ -141,11 +141,6 @@
                             <span class="tier-badge" style="background: {{ badge_bg }}; color: {{ health_color }};">{{ health_tier }}</span>
                         </div>
                     </div>
-
-                    <div class="metric-card">
-                        <div class="label">Diagnostic Confidence</div>
-                        <div class="value">{{ (result.highest_confidence * 100)|round(1) }}%</div>
-                    </div>
                 </div>
 
                 <!-- Visual Health Score Progress Bar -->
@@ -198,7 +193,6 @@
                                     <tr>
                                         <th>Detected Pathology</th>
                                         <th>Host Plant</th>
-                                        <th>Diagnostic Confidence</th>
                                         <th>Clinical Severity</th>
                                     </tr>
                                 </thead>
@@ -207,7 +201,6 @@
                                     <tr>
                                         <td><strong>{{ d.class|replace('_', ' ')|title }}</strong></td>
                                         <td><strong>{{ d.plant or result.primary_plant or result.crop_species }}</strong></td>
-                                        <td><span class="brand-badge">{{ (d.confidence * 100)|round(1) }}%</span></td>
                                         <td><span class="{{ sev_class }}" style="padding: 4px 12px; font-size: 0.8rem; font-weight: 700; border-radius: 6px; display: inline-block;">{{ d.severity or sev_clean or 'Critical' }}</span></td>
                                     </tr>
                                     {% endfor %}

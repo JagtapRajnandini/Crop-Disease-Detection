@@ -603,10 +603,10 @@ input:checked + .slider-switch:before {
     font-size: 0.88rem;
 }
 
-/* 4 KPI Metric Cards (Uniform Height & Alignment) */
+/* 3 KPI Metric Cards (Uniform Height & Alignment) */
 .metric-cards-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 16px;
     margin-bottom: 16px;
 }

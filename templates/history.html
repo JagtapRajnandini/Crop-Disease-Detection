@@ -50,7 +50,6 @@
                         <th>Crop</th>
                         <th>Diagnosis</th>
                         <th>Severity</th>
-                        <th>Certainty</th>
                         <th>Foliar Status</th>
                     </tr>
                 </thead>
@@ -82,7 +81,6 @@
                                 <span class="severity-low" style="padding: 4px 10px; font-size: 0.75rem;">Healthy / Low</span>
                             {% endif %}
                         </td>
-                        <td><span class="brand-badge">{{ (s.confidence * 100)|round(1) }}%</span></td>
                         <td style="font-weight: 600; color: {{ '#9D0208' if s.hotspots_count > 0 else '#2D6A4F' }};">{{ 'Infected' if s.hotspots_count > 0 else 'Clean' }}</td>
                     </tr>
                     {% endfor %}
