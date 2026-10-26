@@ -11,6 +11,7 @@ Full Flask implementation featuring:
 """
 
 from pathlib import Path
+import re
 import os
 import io
 import json
@@ -58,12 +59,8 @@ try:
     except Exception as e:
         print(f"[Notice] Model pre-warm on startup: {e}")
 except ImportError:
-    try:
-        from src.inference.predict import predict_image
-        TWO_STAGE_AVAILABLE = False
-    except ImportError:
-        predict_image = None
-        TWO_STAGE_AVAILABLE = False
+    predict_image = None
+    TWO_STAGE_AVAILABLE = False
 
 # ── Load and Merge Advisory Catalogues (JSON + YAML) ───────────────────────────
 ADVISORY_DATA = {}
@@ -357,7 +354,23 @@ def register():
 
         if not full_name or not username or not password:
             flash("Full name, username, and password are required.", "warning")
-            return render_template("register.html")
+            return render_template("register.html", full_name=full_name, farm_name=farm_name, location=location, username=username)
+
+        # 1. Full name validation: numbers or signs cannot be entered
+        if not re.match(r"^[A-Za-z\s]+$", full_name) or len(full_name) < 2:
+            flash("Full Name cannot contain numbers or special characters.", "warning")
+            return render_template("register.html", full_name=full_name, farm_name=farm_name, location=location, username=username)
+
+        # 2. District / Location validation: valid location, not any random numbers
+        if location:
+            if re.search(r"\d", location) or not re.match(r"^[A-Za-z\s,.-]+$", location) or len(location) < 2:
+                flash("District / Location must be a valid location name and cannot contain numbers.", "warning")
+                return render_template("register.html", full_name=full_name, farm_name=farm_name, location=location, username=username)
+
+        # 3. Choose Username validation: must start with an alphabetical character
+        if not re.match(r"^[A-Za-z]", username):
+            flash("Username must start with an alphabetical character.", "warning")
+            return render_template("register.html", full_name=full_name, farm_name=farm_name, location=location, username=username)
 
         if register_user:
             ok, msg = register_user(username, password, full_name, farm_name, location)
@@ -368,6 +381,8 @@ def register():
                 flash(msg, "danger")
         else:
             flash("Registration service unavailable.", "danger")
+
+        return render_template("register.html", full_name=full_name, farm_name=farm_name, location=location, username=username)
 
     return render_template("register.html")
 
