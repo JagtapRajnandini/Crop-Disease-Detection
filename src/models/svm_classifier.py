@@ -3,16 +3,20 @@ svm_classifier.py
 -----------------
 Stage 2: Machine Learning Classifier (Botanical Feature + Deep Representation Decision Engine).
 Analyzes leaf morphology, contour circularity, lesion color distributions,
-and fine-tuned ResNet-50 spatial embeddings to accurately diagnose 38 PlantVillage categories.
+and classifies fine-tuned ResNet-50 2,048-dimensional spatial embeddings using a
+trained Radial Basis Function Support Vector Machine (RBF-SVM) across 38 PlantVillage categories.
 """
 
+from pathlib import Path
 from typing import Tuple
 import numpy as np
 import cv2
 from PIL import Image
 import torch
+import joblib
 
-from src.models.deep_feature_extractor import get_feature_extractor
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+DEFAULT_SVM_MODEL_PATH = PROJECT_ROOT / "models" / "plantvillage_svm_model.pkl"
 
 # Complete 38 PlantVillage Categories
 PLANTVILLAGE_CLASSES = [
@@ -32,10 +36,31 @@ PLANTVILLAGE_CLASSES = [
 ]
 
 class PlantVillageSVMClassifier:
-    """Intelligent Botanical Computer Vision + Deep Feature Classifier."""
+    """Intelligent Botanical Computer Vision + Deep Feature SVM Classifier."""
 
-    def __init__(self):
+    def __init__(self, model_path: Path = None):
         self.classes = PLANTVILLAGE_CLASSES
+        self.model_path = Path(model_path) if model_path else DEFAULT_SVM_MODEL_PATH
+
+        if not self.model_path.exists():
+            raise FileNotFoundError(
+                f"SVM model file not found at '{self.model_path}'. "
+                "Please verify that 'plantvillage_svm_model.pkl' exists in the models directory. "
+                "Silent fallback to ResNet-50 linear classification head is disabled per system integrity requirements."
+            )
+
+        try:
+            self.svm = joblib.load(self.model_path)
+        except Exception as exc:
+            raise RuntimeError(f"Failed to deserialize SVM model from '{self.model_path}': {exc}") from exc
+
+        if not hasattr(self.svm, "predict"):
+            raise ValueError(f"Loaded artifact from '{self.model_path}' is not a valid scikit-learn classifier.")
+
+        if hasattr(self.svm, "n_features_in_") and self.svm.n_features_in_ != 2048:
+            raise ValueError(
+                f"SVM model expects {self.svm.n_features_in_} features, but ResNet-50 extracts 2,048 features."
+            )
 
     def parse_class_string(self, raw_class: str) -> Tuple[str, str]:
         """Separates species and disease from standard PlantVillage naming."""
@@ -104,37 +129,52 @@ class PlantVillageSVMClassifier:
         crop_hint: str = None
     ) -> Tuple[str, str, str, float]:
         """
-        Classifies 2,048-D features using fine-tuned weights and morphology calibration.
+        Classifies 2,048-D features using the trained RBF-SVM and morphology calibration.
         Returns: (species, disease, raw_class, confidence)
         """
-        extractor = get_feature_extractor()
-        logits = extractor.classify_features(feature_tensor)  # (1, 38)
-        probs = torch.softmax(logits, dim=-1)[0]             # (38,)
+        # Convert feature tensor to contiguous 2D NumPy array of shape (1, 2048)
+        if isinstance(feature_tensor, torch.Tensor):
+            features_np = feature_tensor.detach().cpu().numpy()
+        else:
+            features_np = np.asarray(feature_tensor)
 
-        # Morphological analysis for verification & discrepancy tracking
+        if features_np.ndim == 1:
+            features_np = features_np.reshape(1, -1)
+
+        if features_np.shape[1] != 2048:
+            raise ValueError(
+                f"Expected 2,048-dimensional feature vector, but received vector with dimension {features_np.shape[1]}."
+            )
+
+        # Obtain probability estimates from calibrated SVM (Platt scaling via predict_proba)
+        if hasattr(self.svm, "predict_proba"):
+            probs = self.svm.predict_proba(features_np)[0].copy()
+        else:
+            # Fallback to normalized decision scores if probability estimation was not enabled during training
+            dec_scores = self.svm.decision_function(features_np)[0]
+            exp_scores = np.exp(dec_scores - np.max(dec_scores))
+            probs = exp_scores / np.sum(exp_scores)
+
+        # Morphological analysis for verification & canopy health scoring
         morph = self.analyze_morphology(pil_image)
 
         # Handle crop constraint override if specified by user in UI
         if crop_hint and crop_hint != "Auto-Detect via Field Vision":
             ch = crop_hint.lower().split()[0].replace("(", "").strip()
             # Find matching class indices for this crop
-            matching_indices = []
-            for idx, name in extractor.id2label.items():
-                if ch in name.lower():
-                    matching_indices.append(idx)
+            matching_indices = [idx for idx, name in enumerate(self.classes) if ch in name.lower()]
 
             if matching_indices:
                 # Mask out other crops and renormalize
-                mask = torch.zeros_like(probs)
-                for idx in matching_indices:
-                    mask[idx] = 1.0
+                mask = np.zeros_like(probs)
+                mask[matching_indices] = 1.0
                 filtered_probs = probs * mask
                 if filtered_probs.sum() > 0:
                     probs = filtered_probs / filtered_probs.sum()
 
-        top_idx = torch.argmax(probs).item()
-        top_prob = float(probs[top_idx].item())
-        raw_class = extractor.id2label[top_idx]
+        top_idx = int(np.argmax(probs))
+        top_prob = float(probs[top_idx])
+        raw_class = self.classes[top_idx]
         species, disease = self.parse_class_string(raw_class)
 
         return species, disease, raw_class, top_prob
