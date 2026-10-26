@@ -124,8 +124,9 @@ def compute_canopy_health_score(condition_str, detections, top_confidence):
     if not detections:
         return 96, "OPTIMAL", "#2D6A4F"
 
+    # Any detection not containing 'healthy' is considered a disease
     has_disease = any(
-        any(k in d["class"].lower() for k in DISEASE_KEYWORDS)
+        "healthy" not in d["class"].lower()
         for d in detections
     )
 
