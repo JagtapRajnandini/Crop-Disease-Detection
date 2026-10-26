@@ -17,6 +17,9 @@
                     id="full_name"
                     class="input-styled"
                     placeholder="e.g. Ramesh Patil"
+                    value="{{ full_name|default('') }}"
+                    pattern="^[A-Za-z\s]+$"
+                    title="Full Name can only contain letters and spaces (no numbers or special characters)"
                     required
                     autofocus
                 />
@@ -30,6 +33,7 @@
                     id="farm_name"
                     class="input-styled"
                     placeholder="e.g. Green Valley Polyhouse Bed 4"
+                    value="{{ farm_name|default('') }}"
                 />
             </div>
 
@@ -41,6 +45,9 @@
                     id="location"
                     class="input-styled"
                     placeholder="e.g. Nashik, Maharashtra"
+                    value="{{ location|default('') }}"
+                    pattern="^[A-Za-z\s,.-]+$"
+                    title="District / Location must be a valid location name (cannot contain numbers)"
                 />
             </div>
 
@@ -52,6 +59,9 @@
                     id="username"
                     class="input-styled"
                     placeholder="Select a unique username"
+                    value="{{ username|default('') }}"
+                    pattern="^[A-Za-z].*"
+                    title="Username must start with a letter (alphabetical character)"
                     required
                 />
             </div>
