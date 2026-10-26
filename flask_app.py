@@ -108,11 +108,6 @@ def nl2br_filter(s):
     return Markup("<br />").join(escaped)
 
 # ── Health Scoring Logic (Canopy Health Index & Foliar Severity) ──────────────
-DISEASE_KEYWORDS = [
-    "blight", "spot", "rot", "rust", "scab", "virus", "mold",
-    "mildew", "speck", "canker", "mosaic", "yellow"
-]
-
 def compute_canopy_health_score(condition_str, detections, top_confidence):
     """
     Computes a realistic Canopy Health Index (0 - 100%):
