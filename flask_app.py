@@ -549,7 +549,6 @@ def diagnostics():
             f"Severity Index  : {sev_clean}\n"
             f"Foliar Status   : {'Healthy Foliage' if is_healthy else 'Pathogen Detected'}\n"
             f"Diagnostic Mode : Precision Foliar Scan\n"
-            f"Confidence      : {top_conf * 100:.1f}%\n"
             f"=========================================\n"
         )
 
