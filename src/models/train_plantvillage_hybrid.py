@@ -30,6 +30,7 @@ IMG_SIZE = 224
 NUM_CLASSES = 38
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 OUTPUT_MODEL_PATH = "models/plantvillage_resnet50.pth"
+OUTPUT_SVM_PATH = "models/plantvillage_svm_model.pkl"
 
 print(f"[*] Training Device: {DEVICE}")
 
@@ -165,15 +166,21 @@ def extract_embeddings(model, dataloader):
     import numpy as np
     return np.vstack(embeddings), np.concatenate(labels_list)
 
-def train_svm_classifier(train_features, train_labels, test_features, test_labels):
-    """Fits an RBF Support Vector Machine on 2,048 deep feature vectors."""
+def train_svm_classifier(train_features, train_labels, test_features, test_labels, save_path=OUTPUT_SVM_PATH):
+    """Fits an RBF Support Vector Machine on 2,048 deep feature vectors and serializes to disk."""
     print("[*] Training SVM Classifier on 2,048-dimensional visual feature vectors...")
-    svm = SVC(C=1.0, kernel='rbf', probability=True, cache_size=1000)
+    svm = SVC(C=1.0, kernel='rbf', probability=True, random_state=42, cache_size=1000)
     svm.fit(train_features, train_labels)
 
     preds = svm.predict(test_features)
     acc = accuracy_score(test_labels, preds)
     print(f"[*] SVM Final Test Accuracy: {acc * 100:.2f}%")
+
+    if save_path:
+        os.makedirs(os.path.dirname(save_path), exist_ok=True)
+        joblib.dump(svm, save_path)
+        print(f"[*] Saved trained RBF-SVM model to {save_path} ({os.path.getsize(save_path):,} bytes)")
+
     return svm
 
 # ── 5. Main Execution Entrypoint ───────────────────────────────────────────────
